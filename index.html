@@ -233,6 +233,18 @@ b, strong { font-weight: 800; }
 .hud-row { display: flex; align-items: center; gap: 10px; min-height: 52px; }
 .hud-title { flex: 1; min-width: 0; line-height: 1.1; }
 .hud-t { font-family: var(--font-display); font-weight: 900; font-size: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-tline { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.hud-tline .hud-t { min-width: 0; }
+/* "?" rules button: 30px visual, 44px hit area */
+.rules-btn {
+  position: relative; flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--panel); color: var(--accent); font-family: var(--font-display); font-weight: 900; font-size: 17px; line-height: 1;
+  box-shadow: 0 2px 0 var(--panel-edge), inset 0 0 0 1.5px var(--stitch); transition: transform .09s;
+}
+.rules-btn::after { content: ""; position: absolute; inset: -8px; }
+.rules-btn:active { transform: translateY(1px) scale(.94); }
+.rules-btn.nudge { animation: nudge 1.4s var(--spring) 2; }
+@keyframes nudge { 0%, 60%, 100% { transform: none; } 20% { transform: scale(1.25) rotate(-10deg); } 40% { transform: scale(1.1) rotate(6deg); } }
 .hud-s { font-size: 13px; color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pins { display: flex; align-items: center; gap: 0; height: 44px; flex: none; }
 .pin { position: relative; width: 26px; height: 34px; color: var(--pin); }
@@ -493,6 +505,7 @@ b, strong { font-weight: 800; }
 .pop.big { font-size: 34px; }
 .pop.huge { font-size: 42px; }
 .pop.danger { color: var(--danger); font-size: 30px; }
+.pop.danger.long { font-size: 25px; }
 @keyframes poprise {
   0% { transform: translateY(8px) scale(.4) rotate(-6deg); opacity: 0; }
   18% { transform: translateY(-6px) scale(1.15) rotate(2deg); opacity: 1; }
@@ -638,6 +651,65 @@ b, strong { font-weight: 800; }
   .coach .ic { font-size: 19px; }
 }
 
+/* ================= v3 MECHANIC EXPLAINER ================= */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.mech-modal { max-width: 360px; gap: 14px; padding: 22px 18px 18px; }
+.mech-step { margin-bottom: -6px; }
+.mech-title { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 29px; }
+.new-tag {
+  display: inline-flex; align-items: center; padding: 5px 13px 5px; border-radius: 999px;
+  background: var(--danger); color: #fff; font-size: 13px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; line-height: 1;
+  box-shadow: 0 2px 0 var(--danger-edge); position: relative; rotate: -3deg;
+}
+.new-tag::before { content: ""; position: absolute; inset: 2.5px; border-radius: inherit; border: 1.2px dashed rgba(255, 255, 255, .55); }
+.new-tag.rules { background: var(--panel-3); color: var(--ink); box-shadow: 0 2px 0 var(--panel-edge); rotate: 0deg; }
+.new-tag.rules::before { border-color: var(--stitch); }
+.mech-art {
+  position: relative; border-radius: 18px; background: var(--panel-2); padding: 8px 8px 30px;
+  box-shadow: inset 0 0 0 1.5px var(--line);
+}
+.mech-art canvas, .mech-svg { display: block; width: 100%; height: 150px; border-radius: 12px; }
+.mech-svg svg { width: 100%; height: 100%; display: block; }
+.mech-cap {
+  position: absolute; left: 50%; bottom: 7px; translate: -50% 0; white-space: nowrap; max-width: calc(100% - 16px); overflow: hidden; text-overflow: ellipsis;
+  font-size: 12.5px; font-weight: 800; color: var(--muted); letter-spacing: .02em;
+}
+.mech-cap::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; background: var(--ink); opacity: .85; box-shadow: 0 0 0 3px var(--track); }
+.mech-rules { list-style: none; margin: 0; padding: 0 4px; display: flex; flex-direction: column; gap: 9px; text-align: left; }
+.mech-rules li { position: relative; padding-left: 26px; font-size: 15.5px; font-weight: 700; line-height: 1.32; color: var(--ink); animation: linein .4s var(--ease) both; }
+.mech-rules li::before {
+  content: ""; position: absolute; left: 3px; top: 5px; width: 13px; height: 13px; border-radius: 50%;
+  /* a tiny two-hole sewing button */
+  background: radial-gradient(circle at 34% 50%, var(--accent-ink) 1.3px, transparent 1.8px), radial-gradient(circle at 66% 50%, var(--accent-ink) 1.3px, transparent 1.8px), var(--accent);
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, .18);
+}
+.mech-ok { min-height: 56px; font-size: 19px; margin-top: 2px; }
+.mech-modal.enter .mech-art { animation: mechart .6s var(--spring) .08s both; }
+.mech-modal.enter .new-tag:not(.rules) { animation: tagpop .7s var(--spring) .2s both; }
+@keyframes mechart { from { transform: scale(.82) rotate(-2deg); opacity: 0; } }
+@keyframes tagpop { 0% { transform: scale(0) rotate(-30deg); } 70% { transform: scale(1.15) rotate(4deg); } 100% { transform: none; } }
+@media (max-height: 700px) {
+  .mech-modal { gap: 10px; padding: 18px 16px 14px; }
+  .mech-title { font-size: 25px; gap: 6px; }
+  .mech-art canvas, .mech-svg { height: 136px; }
+  .mech-rules li { font-size: 14.5px; }
+  .mech-ok { min-height: 52px; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .mech-modal { max-width: 560px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 8px; align-items: center; }
+  .mech-step, .mech-title { grid-column: 1 / 3; }
+  .mech-title { flex-direction: row; justify-content: center; font-size: 22px; }
+  .mech-art { grid-column: 1; grid-row: span 2; }
+  .mech-art canvas, .mech-svg { height: 96px; }
+  .mech-rules li { font-size: 13.5px; }
+}
+/* level map: intro levels */
+.new-flag {
+  position: absolute; top: -8px; left: calc(50% + 16px); z-index: 3; padding: 3px 7px; border-radius: 999px;
+  background: var(--danger); color: #fff; font-size: 10.5px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; line-height: 1;
+  box-shadow: 0 2px 0 var(--danger-edge); rotate: 8deg; pointer-events: none;
+}
+
 </style>
 <div id="app" class="app" data-mode="home">
   <div id="frame" class="frame">
@@ -647,7 +719,7 @@ b, strong { font-weight: 800; }
       <div class="hud-row">
         <button class="ibtn" data-action="game-back" aria-label="Back to home"><i data-icon="back"></i></button>
         <div class="hud-title">
-          <div id="hud-title" class="hud-t">Level 1</div>
+          <div class="hud-tline"><div id="hud-title" class="hud-t">Level 1</div><button id="btn-rules" class="rules-btn" data-action="rules" aria-label="How this board works" hidden>?</button></div>
           <div id="hud-sub" class="hud-s">0 left</div>
         </div>
         <div id="hud-timer" class="timer" hidden>
@@ -855,6 +927,20 @@ b, strong { font-weight: 800; }
     </div>
   </div>
 
+  <div id="modal-mech" class="modal" role="dialog" aria-labelledby="mech-title" hidden>
+    <div class="modal-in stitched mech-modal">
+      <div id="mech-step" class="kicker mech-step" hidden>1 of 2</div>
+      <h2 id="mech-title" class="sheet-title mech-title"><span id="mech-tag" class="new-tag">New<span class="sr">:</span></span> <span id="mech-name">Woven ribbons</span></h2>
+      <div class="mech-art">
+        <canvas id="mech-canvas" aria-hidden="true"></canvas>
+        <div id="mech-svg" class="mech-svg" aria-hidden="true" hidden></div>
+        <span id="mech-cap" class="mech-cap"></span>
+      </div>
+      <ul id="mech-rules" class="mech-rules"></ul>
+      <button id="mech-ok" class="btn primary wide mech-ok" data-action="mech-ok">Got it</button>
+    </div>
+  </div>
+
   <div id="modal-login" class="modal" role="dialog" aria-labelledby="login-title" hidden>
     <div class="modal-in stitched">
       <div class="kicker">Daily thread</div>
@@ -905,7 +991,8 @@ b, strong { font-weight: 800; }
     ],
   };
 
-  /* Fabrics = themes. `ribbons` is always 6 colors (level color index 0..5).
+  /* Fabrics = themes. Optional `knot`: thread colour for knot glyphs (default: stitch; Render also avoids a
+     thread that matches either tied ribbon). `ribbons` is always 6 colors (level color index 0..5).
      ui.* feed CSS custom properties. pattern: 'twill'|'weave'|'felt'|'gingham'|'silk'|'tartan' */
   LE.FABRICS = [
     {
@@ -916,7 +1003,7 @@ b, strong { font-weight: 800; }
     },
     {
       id: 'linen', name: 'Linen', cost: 0, dark: false, pattern: 'weave',
-      bg: '#d9d6cb', patch: '#efece3', patch2: '#e6e2d6', hole: '#c9c3b2', stitch: '#8a7f6a',
+      bg: '#d9d6cb', patch: '#efece3', patch2: '#e6e2d6', hole: '#c9c3b2', stitch: '#8a7f6a', knot: '#fff4d2',
       ribbons: ['#d9462b', '#1f5fa8', '#e0a100', '#2d8a63', '#8a3fa0', '#e2668f'],
       ui: { bg: '#d9d6cb', panel: '#f4f1e9', ink: '#262520', muted: '#6f6a5c', accent: '#1f5fa8', accentInk: '#ffffff', danger: '#c8321e', good: '#2d8a63' },
     },
@@ -928,7 +1015,7 @@ b, strong { font-weight: 800; }
     },
     {
       id: 'gingham', name: 'Gingham', cost: 600, dark: false, pattern: 'gingham',
-      bg: '#f3dcdc', patch: '#fffaf6', patch2: '#f7e6e4', hole: '#e4bcbc', stitch: '#b3263a',
+      bg: '#f3dcdc', patch: '#fffaf6', patch2: '#f7e6e4', hole: '#e4bcbc', stitch: '#b3263a', knot: '#fff4e0',
       ribbons: ['#c8102e', '#1b998b', '#2e4057', '#f4a259', '#5b8e7d', '#8c5383'],
       ui: { bg: '#f3dcdc', panel: '#fffaf6', ink: '#3a1a1f', muted: '#8d6268', accent: '#c8102e', accentInk: '#ffffff', danger: '#c8102e', good: '#1b998b' },
     },
@@ -972,7 +1059,7 @@ b, strong { font-weight: 800; }
    ribbons, deep dependency chains, only 1-3 free ribbons at the start. */
 (function (root) {
   const LE = (root.LE = root.LE || {});
-  const GEN_VERSION = 2;
+  const GEN_VERSION = 3;
 
   /* ---------------- RNG: string hash + mulberry32 ---------------- */
   function hashStr(s) {
@@ -1131,13 +1218,16 @@ b, strong { font-weight: 800; }
       return c < 0 || r < 0 || c >= W || r >= H ? -1 : r * W + c;
     };
     const ws = [0, 0, 0, 0], ds = [0, 0, 0, 0];
-    return function walk(head, k, L, coil, ok) {
+    // cross(t, d) -> cell beyond a crossable cell next to t in direction d, or -1 (weave)
+    return function walk(head, k, L, coil, ok, cross, maxX) {
       // per-ribbon style: tight zig-zags, or 'curvy' (2-3 cell legs -> S-curves, hooks, U-turns)
       const curvy = rng.next() < p.curvyP;
       tok++;
       mark[head] = tok;
       const cells = [head];
+      cells.xs = [];
       let cur = OPP[k], run = 1;
+      const xs2 = [-1, -1, -1, -1];
       while (cells.length < L) {
         const t = cells[cells.length - 1];
         let n = 0, tot = 0;
@@ -1146,6 +1236,22 @@ b, strong { font-weight: 800; }
           const straight = d === cur;
           if (straight && run >= p.maxRun) continue;
           const m = nb(t, d);
+          xs2[d] = -1;
+          if (m >= 0 && mark[m] !== tok && cross && cells.length + 2 <= L && cells.xs.length < (maxX || 0) &&
+              (straight ? run + 2 : 3) <= p.maxRun && !ok(m)) {
+            // weave straight across another ribbon's straight segment
+            const m2 = cross(t, d);
+            if (m2 >= 0 && mark[m2] !== tok) {
+              let touch = false;
+              for (let e = 0; e < 4 && !touch; e++) {
+                const q = nb(m, e), q2 = nb(m2, e);
+                if (q >= 0 && q !== t && mark[q] === tok) touch = true;
+                if (q2 >= 0 && q2 !== m && mark[q2] === tok) touch = true;
+              }
+              if (!touch) { xs2[d] = m2; ds[n] = d; ws[n] = p.crossW; tot += p.crossW; n++; }
+            }
+            continue;
+          }
           if (m < 0 || mark[m] === tok || !ok(m)) continue;
           let touch = false;
           for (let e = 0; e < 4; e++) {
@@ -1173,6 +1279,14 @@ b, strong { font-weight: 800; }
         const m = nb(t, pick);
         mark[m] = tok;
         cells.push(m);
+        if (xs2[pick] >= 0) { // crossing: continue straight through to the far side
+          cells.xs.push(m);
+          mark[xs2[pick]] = tok;
+          cells.push(xs2[pick]);
+          if (pick === cur) run += 2;
+          else { run = 3; cur = pick; }
+          continue;
+        }
         if (pick === cur) run++;
         else { run = 2; cur = pick; }
       }
@@ -1200,7 +1314,10 @@ b, strong { font-weight: 800; }
     const g = { W, H, fabCount, fab, minLen: p.minLen };
     const lenCap = p.maxLen;
     const occ = new Int16Array(N).fill(-1);
+    const occ2 = new Int16Array(N).fill(-1); // over ribbon at a crossing cell (occ holds the other)
     const rib = [], blk = [], dead = [], dep = [];
+    const crosses = [], inX = []; // {cell, over, under}; crossings per ribbon
+    const pinsOf = (i) => { const o = []; for (const x of crosses) if (x.under === i) o.push(x.over); return o; };
     const step = (i, k) => {
       const c = (i % W) + DCC[k], r = ((i / W) | 0) + DRR[k];
       return c < 0 || r < 0 || c >= W || r >= H ? -1 : r * W + c;
@@ -1209,10 +1326,12 @@ b, strong { font-weight: 800; }
     function blockers(head, k, self, self2) {
       const out = [];
       for (let j = step(head, k); j >= 0; j = step(j, k)) {
-        const o = occ[j];
-        if (o < 0) continue;
-        if (o === self || o === self2) return null;
-        if (out.indexOf(o) < 0) out.push(o);
+        for (let l = 0; l < 2; l++) {
+          const o = l ? occ2[j] : occ[j];
+          if (o < 0) continue;
+          if (o === self || o === self2) return null;
+          if (out.indexOf(o) < 0) out.push(o);
+        }
       }
       return out;
     }
@@ -1259,7 +1378,7 @@ b, strong { font-weight: 800; }
       if (rib[X] && rib[X].coil) return true;
       for (let d = 0; d < 4; d++) {
         const m = step(e, d);
-        if (m >= 0 && m !== prev && m !== next && occ[m] === X) return false;
+        if (m >= 0 && m !== prev && m !== next && (occ[m] === X || occ2[m] === X)) return false;
       }
       return true;
     }
@@ -1275,6 +1394,7 @@ b, strong { font-weight: 800; }
     }
     const walk = makeWalker(W, H, p, rng);
     const bad = new Int32Array(N);
+    const rmark = new Int32Array(4096);
     let badTok = 0;
     let filled = 0, freeNow = 0;
     // phases 1-2 never move a head, so rays are static: index which ribbons' rays cross each cell
@@ -1293,22 +1413,48 @@ b, strong { font-weight: 800; }
       badTok++;
       for (let j = step(e, k); j >= 0; j = step(j, k)) bad[j] = badTok; // own ray
       if (b.length) {
-        for (const o of reachSet(b)) for (const j of rib[o].ray) bad[j] = badTok;
+        for (const o of reachSet(b)) { rmark[o] = badTok; for (const j of rib[o].ray) bad[j] = badTok; }
       }
       if (bad[e] === badTok) return null;
-      const cells = walk(e, k, L, coil, (m) => emptyFab(m) && bad[m] !== badTok);
+      const ok = (m) => emptyFab(m) && bad[m] !== badTok;
+      // Q over X pins X (X waits for Q): only a cycle if X is already upstream of Q's blockers
+      const cross = p.weave && crosses.length < p.maxCross ? (t, d) => {
+        const m = step(t, d);
+        if (m < 0 || occ[m] < 0 || occ2[m] >= 0 || bad[m] === badTok) return -1;
+        const X = occ[m];
+        if (rmark[X] === badTok || dead[X]) return -1;
+        if (!inX[X] && rng.next() < p.spreadP) return -1; // concentrate weaving on fewer ribbons
+        const xc = rib[X].cells, i = xc.indexOf(m);
+        if (i <= 0 || i >= xc.length - 1) return -1;
+        const a = xc[i - 1] - m, z = xc[i + 1] - m;
+        if (a !== -z) return -1; // X must run straight through m ...
+        if ((d >= 2) !== (Math.abs(a) === W)) return -1; // ... perpendicular to us
+        const m2 = step(m, d);
+        return m2 >= 0 && ok(m2) ? m2 : -1;
+      } : null;
+      const cells = walk(e, k, L, coil, ok, cross, Math.min(2, p.maxCross - crosses.length));
       return { cells, k, b, coil };
     }
     function commit(c) {
       const Q = rib.length;
       const own = [];
+      const xs = c.cells.xs || [];
       for (const x of c.cells) ownersIdx(x, own);
-      for (const x of c.cells) occ[x] = Q;
+      for (const x of c.cells) if (xs.indexOf(x) < 0) occ[x] = Q;
       const ray = [];
       for (let j = step(c.cells[0], c.k); j >= 0; j = step(j, c.k)) { ray.push(j); rayIdx[j].push(Q); }
       rib.push({ cells: c.cells, dir: c.k, coil: c.coil, ray });
       blk.push(c.b);
       dead.push(0);
+      inX.push(0);
+      for (const m of xs) {
+        const X = occ[m];
+        occ2[m] = Q;
+        crosses.push({ cell: m, over: Q, under: X });
+        inX[X]++; inX[Q]++;
+        if (!blk[X].length) freeNow--;
+        if (blk[X].indexOf(Q) < 0) blk[X].push(Q);
+      }
       let d = 0;
       for (const x of c.b) if (dep[x] > d) d = dep[x];
       dep.push(d + 1);
@@ -1317,7 +1463,7 @@ b, strong { font-weight: 800; }
         if (!blk[o].length) freeNow--;
         blk[o].push(Q);
       }
-      filled += c.cells.length;
+      filled += c.cells.length - xs.length;
     }
     const cmark = [];
     let ctok = 0;
@@ -1326,6 +1472,13 @@ b, strong { font-weight: 800; }
       let n = 0;
       for (const x of cells) for (const o of rayIdx[x]) {
         if (cmark[o] !== ctok && !blk[o].length) { cmark[o] = ctok; n++; }
+      }
+      for (const m of cells.xs || []) {
+        const X = occ[m];
+        if (blk[X].length) continue;
+        // pins a free ribbon; one whose head points straight off the board stays a trap for good
+        const R = rib[X];
+        n += step(R.cells[0], R.dir) < 0 ? p.edgeTrapW : 1.5;
       }
       return n;
     }
@@ -1434,7 +1587,7 @@ b, strong { font-weight: 800; }
     // waits for A, so this only creates a cycle if A already (transitively) waits for B.
     function tryAbsorb(A, B) {
       const ac = rib[A].cells, bc = rib[B].cells;
-      if (ac.length + bc.length > lenCap) return false;
+      if (ac.length + bc.length > lenCap || inX[B]) return false;
       const tail = ac[ac.length - 1];
       let add = null;
       for (let d = 0; d < 4; d++) {
@@ -1462,7 +1615,7 @@ b, strong { font-weight: 800; }
     // behind. The new ray must snag on something that does not (transitively) wait for F or X.
     function turnAbsorb(F, X) {
       const f = rib[F].cells[0], xc = rib[X].cells;
-      if (xc.length + 1 > lenCap) return false;
+      if (xc.length + 1 > lenCap || inX[X] || inX[F]) return false;
       let d = -1, add = null;
       for (let k = 0; k < 4; k++) {
         const m = step(f, k);
@@ -1486,7 +1639,7 @@ b, strong { font-weight: 800; }
       rib[F].dir = k;
       rib[F].coil = rib[X].coil;
       for (const c of add) occ[c] = F;
-      blk[F] = b;
+      blk[F] = b.concat(pinsOf(F).filter((y) => b.indexOf(y) < 0));
       redirect(X, F);
       blk[X] = [];
       dead[X] = 1;
@@ -1498,6 +1651,7 @@ b, strong { font-weight: 800; }
         blk[i] = dead[i] ? [] : blockers(rib[i].cells[0], rib[i].dir, i, -1) || null;
         if (blk[i] === null) return false; // ray crosses own body
       }
+      for (const x of crosses) if (blk[x.under].indexOf(x.over) < 0) blk[x.under].push(x.over);
       return true;
     }
     function acyclic() {
@@ -1530,7 +1684,7 @@ b, strong { font-weight: 800; }
           const m = step(fo[0], d);
           if (m < 0 || occ[m] < 0 || occ[m] === F) continue;
           const X = occ[m], xc = rib[X].cells, i = xc.indexOf(m);
-          if (i < 1 || i >= xc.length - 2) continue;
+          if (i < 1 || i >= xc.length - 2 || inX[X] || inX[F]) continue;
           const x1 = xc.slice(0, i + 1).concat(fo), x2 = xc.slice(i + 1);
           if (x1.length > lenCap || runs(x1, W).maxBody > p.maxRun) continue;
           let thin = true;
@@ -1564,6 +1718,7 @@ b, strong { font-weight: 800; }
     }
     function splitRibbon(X) {
       const xc = rib[X].cells, before = countFree();
+      if (inX[X]) return false;
       const saveBlk = blk.map((b) => b.slice());
       const cuts = [];
       for (let i = p.minLen; i <= xc.length - p.minLen; i++) cuts.push(i);
@@ -1579,9 +1734,10 @@ b, strong { font-weight: 800; }
           rib.push({ cells: c2, dir: k2, coil: rib[X].coil });
           blk.push([]);
           dead.push(0);
+          inX.push(0);
           for (const c of c2) occ[c] = Y;
           if (rebuildGraph() && acyclic() && countFree() <= Math.max(before, p.idealFree)) return true;
-          rib.pop(); blk.pop(); dead.pop();
+          rib.pop(); blk.pop(); dead.pop(); inX.pop();
           rib[X].cells = xc;
           for (const c of xc) occ[c] = X;
           for (let q = 0; q < blk.length; q++) blk[q] = saveBlk[q];
@@ -1677,9 +1833,187 @@ b, strong { font-weight: 800; }
         }
         if (!opts.length) continue;
         const o = rng.pick(opts);
-        R.cells = o.cells; R.dir = o.k; blk[F] = o.b;
+        R.cells = o.cells; R.dir = o.k; blk[F] = o.b.concat(pinsOf(F).filter((y) => o.b.indexOf(y) < 0));
       }
       free = freeList();
+    }
+
+    // ---- 5a) weave (extra crossings): Q's end sits beside a straight cell m of X and the cell past
+    // m is an end of Z. Q grows straight across m and takes that end cell from Z.
+    if (p.weave && crosses.length < p.maxCross) {
+      const endOf = (c) => { const o = occ[c]; if (o < 0 || occ2[c] >= 0) return -1; const cs = rib[o].cells; return cs[0] === c || cs[cs.length - 1] === c ? o : -1; };
+      const spots = [];
+      for (let m = 0; m < N; m++) {
+        const X = occ[m];
+        if (X < 0 || occ2[m] >= 0 || dead[X]) continue;
+        const xc = rib[X].cells, i = xc.indexOf(m);
+        if (i <= 0 || i >= xc.length - 1 || xc[i - 1] - m !== m - xc[i + 1]) continue;
+        const horiz = Math.abs(xc[i - 1] - m) === 1; // X runs horizontally -> we cross vertically
+        for (const d of horiz ? [0, 1] : [2, 3]) spots.push([m, d]);
+      }
+      rng.shuffle(spots);
+      for (const [m, d] of spots) {
+        if (crosses.length >= p.maxCross) break;
+        const l = step(m, OPP[d]), r2 = step(m, d);
+        if (l < 0 || r2 < 0 || occ2[m] >= 0) continue;
+        const X = occ[m], Q = endOf(l), Z = endOf(r2);
+        if (Q < 0 || Z < 0 || Q === Z || Q === X || Z === X || dead[Q] || dead[Z]) continue;
+        if (!inX[Q] && !inX[X] && rng.next() < p.spreadP) continue; // concentrate weaving
+        { // re-check: earlier steals may have shortened X
+          const xc = rib[X].cells, i = xc.indexOf(m);
+          if (i <= 0 || i >= xc.length - 1 || xc[i - 1] - m !== m - xc[i + 1]) continue;
+        }
+        const qc = rib[Q].cells, zc = rib[Z].cells;
+        if (zc.length - 1 < Math.max(2, p.minLen) || qc.length + 2 > lenCap) continue;
+        const q2 = (qc[qc.length - 1] === l ? qc.slice() : qc.slice().reverse()).concat([m, r2]);
+        const z2 = zc[0] === r2 ? zc.slice(1) : zc.slice(0, -1);
+        if (occ2[z2[0]] >= 0 || occ2[z2[z2.length - 1]] >= 0) continue; // new end on a crossing
+        if (runs(q2, W).maxBody > p.maxRun) continue;
+        let thin = true;
+        if (!rib[Q].coil) for (const c of [m, r2]) for (let e = 0; e < 4; e++) {
+          const y = step(c, e);
+          if (y >= 0 && y !== l && y !== m && y !== r2 && (occ[y] === Q || occ2[y] === Q)) thin = false;
+        }
+        if (!thin) continue;
+        const dirOf = (cs, k0) => { if (cs.length < 2) return k0; for (let k = 0; k < 4; k++) if (step(cs[0], OPP[k]) === cs[1]) return k; return k0; };
+        const save = { qc, qd: rib[Q].dir, zc, zd: rib[Z].dir, blk: blk.map((b) => b.slice()) };
+        const before = countFree();
+        rib[Q].cells = q2; rib[Q].dir = q2[0] === qc[0] && qc.length > 1 ? rib[Q].dir : dirOf(q2, rib[Q].dir);
+        rib[Z].cells = z2; rib[Z].dir = z2[0] === zc[0] ? rib[Z].dir : dirOf(z2, rib[Z].dir);
+        occ2[m] = Q; occ[r2] = Q;
+        let done = false;
+        const looksFree = (i) => { const b = blockers(rib[i].cells[0], rib[i].dir, i, -1); return !!b && !b.length && !pinsOf(i).length; };
+        const order = looksFree(Q) && !looksFree(X) ? [X, Q] : looksFree(X) && !looksFree(Q) ? [Q, X] : rng.shuffle([Q, X]);
+        for (const over of order) {
+          const x = { cell: m, over, under: over === Q ? X : Q };
+          crosses.push(x);
+          if (rebuildGraph() && acyclic() && countFree() <= Math.max(before, p.idealFree)) { done = true; break; }
+          crosses.pop();
+        }
+        if (done) { inX[Q]++; inX[X]++; continue; }
+        rib[Q].cells = save.qc; rib[Q].dir = save.qd; rib[Z].cells = save.zc; rib[Z].dir = save.zd;
+        occ2[m] = -1; occ[r2] = Z;
+        for (let q = 0; q < blk.length; q++) blk[q] = save.blk[q];
+      }
+    }
+
+    // ---- 5) weave: flip over/under where that turns a clear-looking ribbon into a pinned trap ----
+    if (p.weave && crosses.length) {
+      for (const x of rng.shuffle(crosses.slice())) {
+        const Q = x.over, X = x.under;
+        const rb = blockers(rib[Q].cells[0], rib[Q].dir, Q, -1);
+        if (!(rb && !rb.length) && rng.next() >= p.flipP) continue;
+        const before = countFree();
+        x.over = X; x.under = Q;
+        if (rebuildGraph() && acyclic() && countFree() <= Math.max(before, p.idealFree)) continue;
+        x.over = Q; x.under = X;
+        rebuildGraph();
+      }
+    }
+
+    // ---- 6) knots: tie adjacent pairs into units (prefer one clear-looking + one stuck) ----
+    const partner = new Int16Array(rib.length).fill(-1);
+    const knots = [];
+    const uRep = (i) => (partner[i] >= 0 && partner[i] < i ? partner[i] : i);
+    function unitGraphOk() {
+      const U = rib.length, out = [];
+      for (let i = 0; i < U; i++) out.push([]);
+      for (let i = 0; i < U; i++) {
+        if (dead[i]) continue;
+        const ri = uRep(i);
+        for (const y of blk[i]) { const ry = uRep(y); if (ry === ri) return false; out[ri].push(ry); }
+      }
+      const st = new Uint8Array(U), it = new Int32Array(U);
+      for (let s0 = 0; s0 < U; s0++) {
+        if (dead[s0] || st[s0] || uRep(s0) !== s0) continue;
+        const stack = [s0];
+        st[s0] = 1;
+        while (stack.length) {
+          const x = stack[stack.length - 1];
+          if (it[x] < out[x].length) {
+            const y = out[x][it[x]++];
+            if (st[y] === 1) return false;
+            if (!st[y]) { st[y] = 1; stack.push(y); }
+          } else { st[x] = 2; stack.pop(); }
+        }
+      }
+      return true;
+    }
+    function freeUnits() {
+      let n = 0;
+      for (let i = 0; i < rib.length; i++) {
+        if (dead[i] || uRep(i) !== i) continue;
+        if (!blk[i].length && (partner[i] < 0 || !blk[partner[i]].length)) n++;
+      }
+      return n;
+    }
+    if (p.knots) {
+      const crossPair = (a, b) => crosses.some((x) => (x.over === a && x.under === b) || (x.over === b && x.under === a));
+      const cands = [], seenPair = new Set();
+      for (let A = 0; A < rib.length; A++) {
+        if (dead[A]) continue;
+        for (const ca of rib[A].cells) {
+          if (occ2[ca] >= 0) continue;
+          for (let d = 0; d < 4; d++) {
+            const cb = step(ca, d);
+            if (cb < 0 || occ2[cb] >= 0 || occ[cb] < 0) continue;
+            const B = occ[cb];
+            if (B === A || dead[B]) continue;
+            const key = Math.min(A, B) * 4096 + Math.max(A, B);
+            if (seenPair.has(key) || crossPair(A, B)) continue;
+            seenPair.add(key);
+            cands.push({ A, B, ca, cb, trap: !blk[A].length !== !blk[B].length });
+          }
+        }
+      }
+      rng.shuffle(cands);
+      cands.sort((u, v) => (v.trap ? 1 : 0) - (u.trap ? 1 : 0));
+      const want = p.minKnots + rng.int(p.maxKnots - p.minKnots + 1);
+      for (const c of cands) {
+        if (knots.length >= p.maxKnots) break;
+        if (knots.length >= want && (freeUnits() <= p.freeMax || !c.trap)) break;
+        if (partner[c.A] >= 0 || partner[c.B] >= 0) continue;
+        if (blk[c.A].indexOf(c.B) >= 0 || blk[c.B].indexOf(c.A) >= 0) continue;
+        partner[c.A] = c.B; partner[c.B] = c.A;
+        if (unitGraphOk()) { knots.push(c); continue; }
+        partner[c.A] = -1; partner[c.B] = -1;
+      }
+    }
+
+    // ---- 7) traps: turn a pinned ribbon (or one half of a knot) around so its ray is clear.
+    // It still cannot move (pinned / tied to a stuck partner) but now LOOKS free. Only removes
+    // edges, so the graph stays acyclic and the free-unit count does not change.
+    function clearRay(X) {
+      const R = rib[X];
+      if (R.cells.length < 2) return false;
+      const cells = R.cells.slice().reverse();
+      let k = -1;
+      for (let d = 0; d < 4; d++) if (step(cells[0], OPP[d]) === cells[1]) k = d;
+      if (runs(cells, W).maxBody > p.maxRun) return false;
+      const b = blockers(cells[0], k, X, -1);
+      if (!b || b.length) return false;
+      R.cells = cells; R.dir = k; blk[X] = pinsOf(X);
+      return true;
+    }
+    const rayClearNow = (i) => { const b = blockers(rib[i].cells[0], rib[i].dir, i, -1); return !!b && !b.length; };
+    if (p.weave && crosses.length) {
+      const pinned = [...new Set(crosses.map((x) => x.under))].filter((i) => partner[i] < 0);
+      let have = pinned.filter(rayClearNow).length;
+      const goal = Math.max(p.minPinTraps, Math.round(crosses.length * p.trapShare));
+      for (const X of rng.shuffle(pinned)) {
+        if (have >= goal) break;
+        if (!rayClearNow(X) && clearRay(X)) have++;
+      }
+    }
+    if (knots.length) {
+      let have = knots.filter((k) => !blk[k.A].length !== !blk[k.B].length).length;
+      const goal = Math.max(p.minKnotTraps, Math.ceil(knots.length * 0.5));
+      for (const k of rng.shuffle(knots.slice())) {
+        if (have >= goal) break;
+        if (!blk[k.A].length || !blk[k.B].length) continue; // already a trap (or free)
+        const pick = rng.shuffle([k.A, k.B]).filter((i) => !pinsOf(i).length);
+        for (const X of pick) if (clearRay(X)) { have++; break; }
+      }
     }
 
     // compact (drop merged ribbons, renumber graph)
@@ -1688,6 +2022,10 @@ b, strong { font-weight: 800; }
     rib.forEach((R, i) => { if (!dead[i]) { remap[i] = keep.length; keep.push(i); } });
     g.rib = keep.map((i) => rib[i]);
     g.blk = keep.map((i) => blk[i].map((y) => remap[y]));
+    g.cross = crosses.map((x) => ({ cell: x.cell, over: remap[x.over], under: remap[x.under] }));
+    g.knots = knots.map((k) => ({ a: remap[k.A], b: remap[k.B], ca: k.ca, cb: k.cb }));
+    g.partner = keep.map((i) => (partner[i] >= 0 ? remap[partner[i]] : -1));
+    g.rayClear = keep.map((i) => { const b = blockers(rib[i].cells[0], rib[i].dir, i, -1); return !!b && !b.length; });
     g.filled = 0;
     for (let i = 0; i < N; i++) if (occ[i] >= 0) g.filled++;
     return g;
@@ -1702,34 +2040,49 @@ b, strong { font-weight: 800; }
     return false;
   }
 
-  // stats from the dependency graph: free = no blockers, depth = longest chain
+  // stats from the unit graph (knotted pairs are one unit): free units, depth = longest chain,
+  // traps = pinned ribbons whose ray is clear + knots where exactly one partner looks free
   function rawMetrics(g) {
-    const n = g.rib.length, blk = g.blk;
+    const n = g.rib.length, blk = g.blk, partner = g.partner || [];
+    const rep = (i) => (partner[i] >= 0 && partner[i] < i ? partner[i] : i);
+    const uout = [];
+    for (let i = 0; i < n; i++) uout.push([]);
+    for (let i = 0; i < n; i++) for (const y of blk[i]) if (rep(y) !== rep(i)) uout[rep(i)].push(rep(y));
     const depth = new Int16Array(n);
     const visit = (i) => {
       if (depth[i]) return depth[i];
       depth[i] = -1;
       let d = 0;
-      for (const b of blk[i]) { const x = visit(b); if (x > d) d = x; }
+      for (const b of uout[i]) { const x = visit(b); if (x > d) d = x; }
       return (depth[i] = d + 1);
     };
-    let free = 0, maxDepth = 0, cells = 0, bends = 0, touch = 0, short = 0;
+    const pinned = new Uint8Array(n);
+    for (const x of g.cross || []) pinned[x.under] = 1;
+    let free = 0, maxDepth = 0, cells = 0, bends = 0, touch = 0, short = 0, pinTraps = 0;
     for (let i = 0; i < n; i++) {
-      if (!blk[i].length) free++;
-      const d = visit(i);
-      if (d > maxDepth) maxDepth = d;
+      if (rep(i) === i) {
+        if (!uout[i].length) free++;
+        const d = visit(i);
+        if (d > maxDepth) maxDepth = d;
+      }
+      if (pinned[i] && g.rayClear && g.rayClear[i]) pinTraps++;
       const c = g.rib[i].cells;
       cells += c.length;
       for (let j = 2; j < c.length; j++) if (c[j] - c[j - 1] !== c[j - 1] - c[j - 2]) bends++;
       if (touchesSelf(c, g.W)) touch++;
       if (c.length < g.minLen) short++;
     }
+    let knotTraps = 0;
+    for (const k of g.knots || []) if (!blk[k.a].length !== !blk[k.b].length) knotTraps++;
     return { ribbons: n, free, depth: maxDepth, density: g.filled / g.fabCount,
-      avgLen: n ? cells / n : 0, bends: n ? bends / n : 0, selfTouch: n ? touch / n : 0, short };
+      avgLen: n ? cells / n : 0, bends: n ? bends / n : 0, selfTouch: n ? touch / n : 0, short,
+      crossings: (g.cross || []).length, knots: (g.knots || []).length, pinTraps, knotTraps };
   }
 
-  function assignColors(arrows, W, H, rng) {
+  function assignColors(arrows, W, H, rng, hardPairs) {
     const n = arrows.length;
+    const hard = arrows.map(() => []);
+    for (const [x, y] of hardPairs || []) { hard[x].push(y); hard[y].push(x); } // crossing partners
     const occ = new Int16Array(W * H).fill(-1);
     arrows.forEach((a, i) => a.cells.forEach(([c, r]) => (occ[r * W + c] = i)));
     const adj = arrows.map(() => new Set());
@@ -1745,6 +2098,7 @@ b, strong { font-weight: 800; }
     for (const i of order) {
       const nbCount = new Array(NCOLORS).fill(0);
       for (const j of adj[i]) if (col[j] >= 0) nbCount[col[j]]++;
+      for (const j of hard[i]) if (col[j] >= 0) nbCount[col[j]] += 1000;
       let bestC = -1, bestS = Infinity;
       const start = rng.int(NCOLORS);
       for (let t = 0; t < NCOLORS; t++) {
@@ -1760,6 +2114,57 @@ b, strong { font-weight: 800; }
 
   function sameCell(a, b) { return a[0] === b[0] && a[1] === b[1]; }
 
+  /* ---------------- rules model (shared by validate / solver / stats) ----------------
+     Unit = a single ribbon or a knotted pair. A ribbon is stuck if it is pinned (under a present
+     over ribbon at a crossing) or its ray holds any other present ribbon. A unit leaves only if no
+     member is stuck (partners count as present). Removal is monotone, so greedy removal of free
+     units decides solvability. */
+  function model(level) {
+    const W = level.cols, H = level.rows;
+    const byId = new Map();
+    for (const a of level.arrows) byId.set(a.id, a);
+    const at = new Map(); // cell key -> ids, top first
+    for (const a of level.arrows) for (const [c, r] of a.cells) {
+      const k = r * W + c;
+      if (!at.has(k)) at.set(k, []);
+      at.get(k).push(a.id);
+    }
+    const pins = new Map(); // under id -> [{over, cell}]
+    for (const x of level.crossings || []) {
+      at.set(x.r * W + x.c, [x.over, x.under]);
+      if (!pins.has(x.under)) pins.set(x.under, []);
+      pins.get(x.under).push({ over: x.over, cell: [x.c, x.r] });
+    }
+    const partner = new Map();
+    for (const k of level.knots || []) { partner.set(k.a, k.b); partner.set(k.b, k.a); }
+    return { W, H, byId, at, pins, partner };
+  }
+  // why ribbon id cannot move right now (null if it can): pinned first, then ray
+  function stuckOf(M, id, present) {
+    for (const pn of M.pins.get(id) || []) {
+      if (present.has(pn.over)) return { reason: 'pinned', blockerId: pn.over, cell: pn.cell, travel: 0 };
+    }
+    const a = M.byId.get(id), d = LE.DIRS[a.dir];
+    let c = a.cells[0][0] + d.dc, r = a.cells[0][1] + d.dr, i = 0;
+    while (c >= 0 && r >= 0 && c < M.W && r < M.H) {
+      for (const o of M.at.get(r * M.W + c) || []) {
+        if (o !== id && present.has(o)) return { reason: 'ray', blockerId: o, cell: [c, r], travel: i };
+      }
+      c += d.dc; r += d.dr; i++;
+    }
+    return null;
+  }
+  function unitsOf(M, ids) {
+    const out = [], done = new Set();
+    for (const id of ids) {
+      if (done.has(id)) continue;
+      const q = M.partner.get(id);
+      if (q !== undefined && ids.indexOf(q) >= 0) { out.push([id, q]); done.add(q); } else out.push([id]);
+      done.add(id);
+    }
+    return out;
+  }
+
   function validate(level) {
     try {
       if (!level || typeof level !== 'object') return { ok: false, reason: 'no level' };
@@ -1774,14 +2179,29 @@ b, strong { font-weight: 800; }
       }
       if (!Array.isArray(level.arrows) || !level.arrows.length) return { ok: false, reason: 'no arrows' };
       if (!(level.lives > 0)) return { ok: false, reason: 'lives' };
-      const occ = new Map();
+      const crossings = level.crossings || [], knots = level.knots || [];
+      if (!Array.isArray(crossings) || !Array.isArray(knots)) return { ok: false, reason: 'crossings/knots not arrays' };
       const ids = new Set();
       for (const a of level.arrows) {
         if (!Number.isInteger(a.id) || ids.has(a.id)) return { ok: false, reason: 'bad/dup id ' + a.id };
         ids.add(a.id);
+      }
+      const byId = new Map(level.arrows.map((a) => [a.id, a]));
+      const xAt = new Map();
+      for (const x of crossings) {
+        if (!x || !Number.isInteger(x.c) || !Number.isInteger(x.r) || x.c < 0 || x.r < 0 || x.c >= W || x.r >= H)
+          return { ok: false, reason: 'bad crossing cell' };
+        if (!ids.has(x.over) || !ids.has(x.under) || x.over === x.under) return { ok: false, reason: 'bad crossing ids' };
+        const k = x.r * W + x.c;
+        if (xAt.has(k)) return { ok: false, reason: 'duplicate crossing at ' + x.c + ',' + x.r };
+        xAt.set(k, x);
+      }
+      const occ = new Map();
+      for (const a of level.arrows) {
         if (!LE.DIRS[a.dir] || DK.indexOf(a.dir) < 0) return { ok: false, reason: 'bad dir ' + a.id };
         if (!Number.isInteger(a.color) || a.color < 0 || a.color >= NCOLORS) return { ok: false, reason: 'bad color ' + a.id };
         if (!Array.isArray(a.cells) || !a.cells.length) return { ok: false, reason: 'no cells ' + a.id };
+        const own = new Set();
         for (let i = 0; i < a.cells.length; i++) {
           const cell = a.cells[i];
           const [c, r] = cell;
@@ -1789,7 +2209,13 @@ b, strong { font-weight: 800; }
             return { ok: false, reason: 'cell out of bounds ' + a.id };
           if (level.mask && level.mask[r][c] !== '#') return { ok: false, reason: 'cell on void ' + a.id };
           const key = r * W + c;
-          if (occ.has(key)) return { ok: false, reason: 'overlap at ' + c + ',' + r };
+          if (own.has(key)) return { ok: false, reason: 'repeated cell in ' + a.id };
+          own.add(key);
+          if (occ.has(key)) {
+            const x = xAt.get(key), o = occ.get(key);
+            if (!x || !((x.over === o && x.under === a.id) || (x.under === o && x.over === a.id)))
+              return { ok: false, reason: 'overlap at ' + c + ',' + r };
+          }
           occ.set(key, a.id);
           if (i > 0) {
             const p = a.cells[i - 1];
@@ -1802,59 +2228,110 @@ b, strong { font-weight: 800; }
           if (sameCell(front, a.cells[1])) return { ok: false, reason: 'body in front of head ' + a.id };
         }
       }
-      const order = solveOrder(level);
-      if (order.length !== level.arrows.length) return { ok: false, reason: 'unsolvable' };
+      // crossings: both ribbons pass straight through, one horizontal, one vertical
+      for (const x of crossings) {
+        const axis = [];
+        for (const id of [x.over, x.under]) {
+          const cells = byId.get(id).cells;
+          const i = cells.findIndex((q) => q[0] === x.c && q[1] === x.r);
+          if (i < 0) return { ok: false, reason: 'crossing cell not in ribbon ' + id };
+          if (i === 0 || i === cells.length - 1) return { ok: false, reason: 'crossing at head/tail of ' + id };
+          const pv = cells[i - 1], nx = cells[i + 1];
+          if (pv[0] + nx[0] !== 2 * x.c || pv[1] + nx[1] !== 2 * x.r) return { ok: false, reason: 'ribbon ' + id + ' turns at crossing' };
+          axis.push(pv[0] === x.c ? 'v' : 'h');
+        }
+        if (axis[0] === axis[1]) return { ok: false, reason: 'crossing not perpendicular at ' + x.c + ',' + x.r };
+      }
+      // over-relation must be acyclic
+      {
+        const under = new Map();
+        for (const x of crossings) { if (!under.has(x.under)) under.set(x.under, []); under.get(x.under).push(x.over); }
+        const st = new Map();
+        const dfs = (u) => {
+          st.set(u, 1);
+          for (const v of under.get(u) || []) {
+            if (st.get(v) === 1) return false;
+            if (!st.get(v) && !dfs(v)) return false;
+          }
+          st.set(u, 2);
+          return true;
+        };
+        for (const u of under.keys()) if (!st.get(u) && !dfs(u)) return { ok: false, reason: 'over/under cycle' };
+      }
+      // knots
+      const knotted = new Set();
+      for (const k of knots) {
+        if (!k || !ids.has(k.a) || !ids.has(k.b) || k.a === k.b) return { ok: false, reason: 'bad knot ids' };
+        if (knotted.has(k.a) || knotted.has(k.b)) return { ok: false, reason: 'ribbon in two knots' };
+        knotted.add(k.a); knotted.add(k.b);
+        if (!Array.isArray(k.at) || k.at.length !== 2) return { ok: false, reason: 'bad knot cells' };
+        const [p0, p1] = k.at;
+        if (!byId.get(k.a).cells.some((q) => sameCell(q, p0)) || !byId.get(k.b).cells.some((q) => sameCell(q, p1)))
+          return { ok: false, reason: 'knot cell not in its ribbon' };
+        if (Math.abs(p0[0] - p1[0]) + Math.abs(p0[1] - p1[1]) !== 1) return { ok: false, reason: 'knot cells not adjacent' };
+        if (xAt.has(p0[1] * W + p0[0]) || xAt.has(p1[1] * W + p1[0])) return { ok: false, reason: 'knot on a crossing' };
+        if (crossings.some((x) => (x.over === k.a && x.under === k.b) || (x.over === k.b && x.under === k.a)))
+          return { ok: false, reason: 'knot partners cross' };
+      }
+      const { stuck } = solveRounds(level);
+      if (stuck) return { ok: false, reason: 'unsolvable' };
       return { ok: true };
     } catch (e) {
       return { ok: false, reason: 'exception: ' + e.message };
     }
   }
 
-  // Greedy removal in rounds (all currently-free ribbons each round). Returns ids in a valid order.
+  // Greedy removal in rounds (every free unit each round).
   function solveRounds(level) {
-    const W = level.cols, H = level.rows;
-    const occ = new Map();
-    for (const a of level.arrows) for (const [c, r] of a.cells) occ.set(r * W + c, a.id);
-    let left = level.arrows.slice();
+    const M = model(level);
+    const present = new Set(level.arrows.map((a) => a.id));
+    let left = unitsOf(M, level.arrows.map((a) => a.id));
     const rounds = [];
     while (left.length) {
-      const free = [];
-      for (const a of left) {
-        const d = LE.DIRS[a.dir];
-        let c = a.cells[0][0] + d.dc, r = a.cells[0][1] + d.dr, ok = true;
-        while (c >= 0 && r >= 0 && c < W && r < H) {
-          const o = occ.get(r * W + c);
-          if (o !== undefined && o !== a.id) { ok = false; break; }
-          c += d.dc; r += d.dr;
-        }
-        if (ok) free.push(a);
-      }
+      const free = left.filter((u) => u.every((id) => !stuckOf(M, id, present)));
       if (!free.length) break;
-      for (const a of free) for (const [c, r] of a.cells) occ.delete(r * W + c);
+      for (const u of free) for (const id of u) present.delete(id);
       const fs = new Set(free);
-      left = left.filter((a) => !fs.has(a));
-      rounds.push(free.map((a) => a.id));
+      left = left.filter((u) => !fs.has(u));
+      rounds.push(free);
     }
     return { rounds, stuck: left.length };
   }
 
+  // one valid tap sequence that wins: one tapped id per unit
   function solveOrder(level) {
     const { rounds } = solveRounds(level);
-    return [].concat(...rounds);
+    const out = [];
+    for (const r of rounds) for (const u of r) out.push(u[0]);
+    return out;
   }
 
   function baseStats(level) {
     const { rounds, stuck } = solveRounds(level);
     let fabric = level.cols * level.rows;
     if (level.mask) fabric = level.mask.join('').split('').filter((ch) => ch === '#').length;
-    const cells = level.arrows.reduce((s, a) => s + a.cells.length, 0);
+    const covered = new Set();
+    for (const a of level.arrows) for (const [c, r] of a.cells) covered.add(r * level.cols + c);
+    // traps: pinned ribbons with a clear ray; knots where exactly one partner looks free
+    const M = model(level);
+    const present = new Set(level.arrows.map((a) => a.id));
+    const rayOnly = (id) => { const s = stuckOf({ ...M, pins: new Map() }, id, present); return !s; };
+    let pinTraps = 0, knotTraps = 0;
+    for (const [id] of M.pins) if (rayOnly(id)) pinTraps++;
+    for (const k of level.knots || []) {
+      const fa = !stuckOf(M, k.a, present), fb = !stuckOf(M, k.b, present);
+      if (fa !== fb) knotTraps++;
+    }
     return {
       ribbons: level.arrows.length,
-      free: rounds.length ? rounds[0].length : 0,
+      free: rounds.length ? rounds[0].length : 0, // free UNITS at start
       depth: rounds.length,
-      density: cells / fabric,
+      density: covered.size / fabric,
       maxLen: Math.max(...level.arrows.map((a) => a.cells.length)),
       stuck,
+      crossings: (level.crossings || []).length,
+      knots: (level.knots || []).length,
+      pinTraps, knotTraps,
     };
   }
 
@@ -1878,9 +2355,11 @@ b, strong { font-weight: 800; }
       if (touch) selfTouch++;
     }
     const n = level.arrows.length;
+    const inMech = new Set();
+    for (const x of level.crossings || []) { inMech.add(x.over); inMech.add(x.under); }
     return Object.assign(s, {
       avgLen: cells / n, bends: bends / n, selfTouch: selfTouch / n, maxBodyRun, maxRun,
-      head3: long ? head3 / long : 1,
+      head3: long ? head3 / long : 1, woven: inMech.size / n,
     });
   }
 
@@ -1894,12 +2373,20 @@ b, strong { font-weight: 800; }
       dir: DK[R.dir],
       color: 0,
     }));
-    assignColors(arrows, g.W, g.H, rng);
+    const cross = g.cross || [], knots = g.knots || [];
+    assignColors(arrows, g.W, g.H, rng, cross.map((x) => [x.over, x.under]));
+    const cellOf = (x) => [x % W, (x / W) | 0];
+    const crossings = cross.map((x) => ({ c: x.cell % W, r: (x.cell / W) | 0, over: ids[x.over], under: ids[x.under] }))
+      .sort((u, v) => u.r - v.r || u.c - v.c);
+    const knotsOut = knots.map((k) => ({ a: ids[k.a], b: ids[k.b], at: [cellOf(k.ca), cellOf(k.cb)] }));
+    const mechanics = [];
+    if (crossings.length) mechanics.push('weave');
+    if (knotsOut.length) mechanics.push('knot');
     arrows.sort((a, b) => a.id - b.id);
     return Object.assign({
       id: '', num: 0, kind: 'normal', cols: g.W, rows: g.H, mask: null,
-      arrows, lives: 3, timeLimit: null, tutorial: null,
-    }, meta, { arrows, gen: GEN_VERSION });
+      arrows, lives: 3, timeLimit: null, tutorial: null, intro: null,
+    }, meta, { arrows, gen: GEN_VERSION, crossings, knots: knotsOut, mechanics });
   }
 
   const DEFAULTS = {
@@ -1908,6 +2395,8 @@ b, strong { font-weight: 800; }
     shortPen: 1.5, noise: 1.5,
     minDensity: 0, freeMin: 1, freeMax: 99, idealFree: 1, minRibbons: 1, minBlocked: 0,
     minAvgLen: 0, minBends: 0, maxSelf: 0.22, maxShort: 99, curvyP: 0, attempts: 10, minAttempts: 2, mask: null,
+    weave: false, minCross: 0, maxCross: 0, crossW: 8, flipP: 0.3, minPinTraps: 0, trapShare: 0.25, spreadP: 0.5, edgeTrapW: 5,
+    knots: false, minKnots: 0, maxKnots: 0, minKnotTraps: 0,
   };
 
   function build(p, seed, meta) {
@@ -1919,11 +2408,15 @@ b, strong { font-weight: 800; }
       const m = rawMetrics(g);
       const ok = m.density >= p.minDensity && m.free >= p.freeMin && m.free <= p.freeMax &&
         m.ribbons >= p.minRibbons && m.ribbons - m.free >= p.minBlocked &&
-        m.avgLen >= p.minAvgLen && m.bends >= p.minBends && m.selfTouch <= p.maxSelf && m.short <= p.maxShort;
+        m.avgLen >= p.minAvgLen && m.bends >= p.minBends && m.selfTouch <= p.maxSelf && m.short <= p.maxShort &&
+        m.crossings >= p.minCross && m.knots >= p.minKnots && m.knots <= p.maxKnots &&
+        m.pinTraps >= p.minPinTraps && m.knotTraps >= p.minKnotTraps;
       // hard targets (free count, ribbon floor, density) dominate; shape targets are soft
       const hard = Math.max(0, m.free - p.freeMax) + Math.max(0, p.freeMin - m.free) +
-        Math.max(0, p.minRibbons - m.ribbons) + (m.density < p.minDensity ? 1 : 0);
-      const soft = Math.max(0, p.minAvgLen - m.avgLen) * 20 + Math.max(0, p.minBends - m.bends) * 20 +
+        Math.max(0, p.minRibbons - m.ribbons) + (m.density < p.minDensity ? 1 : 0) +
+        Math.max(0, p.minCross - m.crossings) * 0.25 + Math.max(0, p.minKnots - m.knots) +
+        Math.max(0, p.minPinTraps - m.pinTraps) + Math.max(0, p.minKnotTraps - m.knotTraps);
+      const soft = Math.max(0, p.minAvgLen - m.avgLen) * 40 + Math.max(0, p.minBends - m.bends) * 40 +
         Math.max(0, m.selfTouch - p.maxSelf) * 150 + Math.max(0, m.short - p.maxShort) * 30;
       const score = (ok ? 1000 : 0) - hard * 200 - soft - Math.abs(m.free - p.idealFree) * 2 +
         Math.min(m.density, 1) * 20 + m.depth * 0.8;
@@ -1972,6 +2465,12 @@ b, strong { font-weight: 800; }
     return Math.floor(floor * 0.92 * cells / (mask.length * mask[0].length));
   }
 
+  // fewer fabric cells, fewer crossings expected
+  function maskedCross(min, mask) {
+    const cells = mask.join('').split('#').length - 1;
+    return Math.max(2, Math.floor(min * Math.min(1, 0.15 + cells / (mask.length * mask[0].length))));
+  }
+
   function curveParams(n) {
     const [cols, rows] = SIZES[sizeIdx(n)];
     const p = { cols, rows };
@@ -1995,11 +2494,24 @@ b, strong { font-weight: 800; }
     }
     if (n >= 4) Object.assign(p, { freeMin: 1, freeMax: n <= 30 ? 2 : 3, idealFree: 1, minRibbons: countFloor(n) });
     if (isBoss(n)) p.density = 1;
+    const bossAttempts = isBoss(n) && n >= 20;
+    // v3 mechanics. Leave a few clear-looking ribbons for the traps to catch (idealFree), the
+    // unit free count at the end is what freeMax limits.
+    if (n >= 11 && !(isBoss(n) && n < 20)) {
+      const [a, b] = n === 11 ? [2, 3] : n <= 19 ? [3, 6] : n <= 39 ? [6, 12] : [10, 18];
+      Object.assign(p, { weave: true, minCross: a, maxCross: b, minPinTraps: 1, idealFree: 2, attempts: 12 });
+    }
+    if (n >= 25) {
+      const [a, b] = n === 25 ? [1, 2] : n <= 39 ? [2, 3] : [3, 6];
+      Object.assign(p, { knots: true, minKnots: a, maxKnots: b, minKnotTraps: 1, idealFree: 3 });
+    }
     if (usesMask(n)) {
       p.mask = makeMask(pickShape('mask' + n, cols), cols, rows);
       p.minRibbons = maskedFloor(p.minRibbons || 1, p.mask);
       if (p.coilP) p.coilP = Math.max(0, p.coilP - 0.06); // small boards: fewer coils
+      if (p.minCross) p.minCross = maskedCross(p.minCross, p.mask);
     }
+    if (bossAttempts) p.attempts = 16; // bosses carry everything at once: search a little longer
     return p;
   }
 
@@ -2017,6 +2529,7 @@ b, strong { font-weight: 800; }
         { id: 3, cells: [[2, 3], [3, 3]], dir: 'L', color: 3 },
       ],
       lives: 3, timeLimit: null, tutorial: TUTORIAL[1],
+      crossings: [], knots: [], mechanics: [], intro: null,
     };
   }
 
@@ -2029,6 +2542,7 @@ b, strong { font-weight: 800; }
       const boss = isBoss(n);
       lvl = build(curveParams(n), 'L' + n, {
         id: 'L' + n, num: n, kind: boss ? 'boss' : 'normal', lives: 3, tutorial: TUTORIAL[n] || null,
+        intro: n === 11 ? 'weave' : n === 25 ? 'knot' : null,
       });
       if (boss) lvl.timeLimit = Math.max(60, Math.round(2.5 * lvl.arrows.length));
     }
@@ -2045,6 +2559,7 @@ b, strong { font-weight: 800; }
     if (rng.next() < 0.5) {
       p.mask = makeMask(pickShape('dmask' + dateKey, p.cols), p.cols, p.rows);
       p.minRibbons = maskedFloor(countFloor(40), p.mask);
+      p.minCross = maskedCross(p.minCross, p.mask);
     }
     const lvl = build(p, 'daily:' + dateKey, {
       id: key, num: 0, kind: 'daily', lives: 3, timeLimit: null, tutorial: null,
@@ -2065,6 +2580,10 @@ b, strong { font-weight: 800; }
     p.turnP = Math.max(0.45, Math.min(0.8, p.turnP + (rng.next() - 0.5) * 0.2));
     p.freeMax = 3;
     p.minRibbons = p.mask ? 1 : p.minRibbons;
+    // weave on about half the boards, never knots
+    Object.assign(p, { knots: false, minKnots: 0, maxKnots: 0, minKnotTraps: 0, idealFree: 2 });
+    if (rng.next() < 0.5) Object.assign(p, { weave: false, minCross: 0, maxCross: 0, minPinTraps: 0, idealFree: 1 });
+    else if (p.mask) p.minCross = maskedCross(p.minCross, p.mask);
     const lvl = build(p, 'zen:' + k, {
       id: key, num: k, kind: 'zen', lives: Infinity, timeLimit: null, tutorial: null,
     });
@@ -2091,7 +2610,9 @@ b, strong { font-weight: 800; }
 
 /* ==== game.js ==== */
 /* Loose Ends — pure game-state logic for one level. (Agent A)
-   No DOM. Attaches LE.Game = { create(level), restore(level, snap) }. */
+   No DOM. Attaches LE.Game = { create(level), restore(level, snap) }.
+   v3 rules: WEAVE (crossings: an under ribbon is pinned while its over ribbon is present) and
+   KNOTS (tied pairs leave together, only if both can move). */
 (function (root) {
   const LE = (root.LE = root.LE || {});
 
@@ -2099,12 +2620,25 @@ b, strong { font-weight: 800; }
 
   function create(level) {
     const W = level.cols, H = level.rows;
-    const occ = new Int32Array(W * H).fill(-1);
     const byId = new Map();
+    const at = new Map(); // cell key -> ids, top (over) first
     for (const a of level.arrows) {
       byId.set(a.id, a);
-      for (const [c, r] of a.cells) occ[r * W + c] = a.id;
+      for (const [c, r] of a.cells) {
+        const k = r * W + c;
+        if (!at.has(k)) at.set(k, []);
+        at.get(k).push(a.id);
+      }
     }
+    const crossings = level.crossings || [];
+    const pins = new Map(); // under id -> [{ over, cell }]
+    for (const x of crossings) {
+      at.set(x.r * W + x.c, [x.over, x.under]);
+      if (!pins.has(x.under)) pins.set(x.under, []);
+      pins.get(x.under).push({ over: x.over, cell: [x.c, x.r] });
+    }
+    const partners = new Map();
+    for (const k of level.knots || []) { partners.set(k.a, k.b); partners.set(k.b, k.a); }
     const inBounds = (c, r) => c >= 0 && r >= 0 && c < W && r < H;
 
     const g = {
@@ -2120,10 +2654,16 @@ b, strong { font-weight: 800; }
       lostBy: null,     // 'pins' | 'timeout' when status === 'lost'
       timeBonus: 0,     // extra seconds from reviving after a timeout
 
+      // present ribbons at a cell, top first
+      ribbonsAt(c, r) {
+        if (!inBounds(c, r)) return [];
+        return (at.get(r * W + c) || []).filter((id) => g.present.has(id));
+      },
+
+      // the top present ribbon at a cell
       arrowAt(c, r) {
-        if (!inBounds(c, r)) return null;
-        const id = occ[r * W + c];
-        return id >= 0 && g.present.has(id) ? id : null;
+        const ids = g.ribbonsAt(c, r);
+        return ids.length ? ids[0] : null;
       },
 
       rayOf(id) {
@@ -2136,68 +2676,116 @@ b, strong { font-weight: 800; }
         return out;
       },
 
-      // first present ribbon (other than id) on the ray: { index, cell, blockerId } or null
-      _firstBlock(id) {
+      partnerOf(id) {
+        const q = partners.get(id);
+        return q !== undefined && g.present.has(q) ? q : null;
+      },
+
+      // over ribbon currently pinning id (null if not pinned)
+      pinnedBy(id) {
+        for (const pn of pins.get(id) || []) if (g.present.has(pn.over)) return pn.over;
+        return null;
+      },
+
+      pinned(id) {
+        return g.present.has(id) && g.pinnedBy(id) !== null;
+      },
+
+      // why a single ribbon cannot move: { reason, blockerId, cell, travel } | null (pinned first, then ray)
+      _stuck(id) {
+        for (const pn of pins.get(id) || []) {
+          if (g.present.has(pn.over)) return { reason: 'pinned', blockerId: pn.over, cell: pn.cell, travel: 0 };
+        }
         const ray = g.rayOf(id);
         for (let i = 0; i < ray.length; i++) {
-          const o = g.arrowAt(ray[i][0], ray[i][1]);
-          if (o !== null && o !== id) return { index: i, cell: ray[i], blockerId: o };
+          for (const o of g.ribbonsAt(ray[i][0], ray[i][1])) {
+            if (o !== id) return { reason: 'ray', blockerId: o, cell: ray[i], travel: i };
+          }
         }
         return null;
       },
 
+      // the removal unit containing id: [id] or [id, partner]
+      _unit(id) {
+        const q = g.partnerOf(id);
+        return q === null ? [id] : [id, q];
+      },
+
       isFree(id) {
-        return g.present.has(id) && !g._firstBlock(id);
+        return g.present.has(id) && g._unit(id).every((x) => !g._stuck(x));
       },
 
       freeIds() {
         const out = [];
-        for (const id of g.present) if (!g._firstBlock(id)) out.push(id);
+        for (const id of g.present) if (g.isFree(id)) out.push(id);
         return out.sort((x, y) => x - y);
+      },
+
+      units() {
+        const out = [], done = new Set();
+        for (const id of Array.from(g.present).sort((x, y) => x - y)) {
+          if (done.has(id)) continue;
+          const u = g._unit(id);
+          u.forEach((x) => done.add(x));
+          out.push(u);
+        }
+        return out;
+      },
+
+      _exitPath(id) {
+        const a = byId.get(id);
+        const d = LE.DIRS[a.dir];
+        const path = g.rayOf(id);
+        const last = path.length ? path[path.length - 1] : a.cells[0];
+        path.push([last[0] + d.dc, last[1] + d.dr]);
+        return path;
       },
 
       tap(id) {
         if (g.status !== 'playing' || !g.present.has(id)) return null;
         g.moves++;
-        const blk = g._firstBlock(id);
-        if (!blk) {
-          const a = byId.get(id);
-          const d = LE.DIRS[a.dir];
-          const exitPath = g.rayOf(id);
-          const last = exitPath.length ? exitPath[exitPath.length - 1] : a.cells[0];
-          exitPath.push([last[0] + d.dc, last[1] + d.dr]);
-          g.present.delete(id);
-          const won = g.present.size === 0;
-          if (won) g.status = 'won';
-          return { ok: true, id, exitPath, remaining: g.present.size, won };
+        const unit = g._unit(id);
+        const partnerId = unit.length > 1 ? unit[1] : null;
+        for (const x of unit) { // tapped ribbon first, then its partner
+          const s = g._stuck(x);
+          if (!s) continue;
+          g.mistakes++;
+          g.lives -= 1;
+          const lost = g.lives <= 0;
+          if (lost) { g.lives = 0; g.status = 'lost'; g.lostBy = 'pins'; }
+          return {
+            ok: false, id: x, tappedId: id, partnerId, reason: s.reason, blockerId: s.blockerId,
+            snagCell: s.cell.slice(), travel: s.travel, lives: g.lives, lost,
+          };
         }
-        g.mistakes++;
-        g.lives -= 1;
-        const lost = g.lives <= 0;
-        if (lost) { g.lives = 0; g.status = 'lost'; g.lostBy = 'pins'; }
-        return {
-          ok: false, id, blockerId: blk.blockerId, snagCell: blk.cell.slice(), travel: blk.index,
-          lives: g.lives, lost,
-        };
+        const exitPath = g._exitPath(id);
+        const partner = partnerId === null ? null : { id: partnerId, exitPath: g._exitPath(partnerId) };
+        for (const x of unit) g.present.delete(x);
+        const won = g.present.size === 0;
+        if (won) g.status = 'won';
+        return { ok: true, id, exitPath, partner, removed: unit.slice(), remaining: g.present.size, won };
       },
 
+      // a free id; prefers the unit whose removal frees the most other units
       hint() {
         if (g.status !== 'playing') return null;
-        const free = g.freeIds();
+        const units = g.units();
+        const free = units.filter((u) => u.every((x) => !g._stuck(x)));
         if (!free.length) return null;
+        const freeSet = new Set(free.map((u) => u[0]));
         let best = free[0], bestN = -1;
-        for (const f of free) {
-          // how many currently-blocked ribbons become free once f is gone?
-          g.present.delete(f);
+        for (const u of free) {
+          u.forEach((x) => g.present.delete(x));
           let n = 0;
-          for (const id of g.present) {
-            if (free.indexOf(id) < 0 && !g._firstBlock(id)) n++;
+          for (const v of units) {
+            if (v === u || freeSet.has(v[0])) continue;
+            if (v.every((x) => !g._stuck(x))) n++;
           }
-          g.present.add(f);
-          if (n > bestN) { bestN = n; best = f; }
+          u.forEach((x) => g.present.add(x));
+          if (n > bestN) { bestN = n; best = u; }
         }
         g.hintsUsed++;
-        return best;
+        return best[0];
       },
 
       revive(n = 1) {
@@ -2252,7 +2840,7 @@ b, strong { font-weight: 800; }
         };
       },
     };
-    Object.defineProperty(g, '_firstBlock', { enumerable: false });
+    for (const k of ['_stuck', '_unit', '_exitPath']) Object.defineProperty(g, k, { enumerable: false });
     return g;
   }
 
@@ -2262,7 +2850,10 @@ b, strong { font-weight: 800; }
     const num = (x, d) => (typeof x === 'number' && Number.isFinite(x) ? x : d);
     if (Array.isArray(snap.present)) {
       const ids = new Set(level.arrows.map((a) => a.id));
-      g.present = new Set(snap.present.filter((id) => ids.has(id)));
+      const keep = new Set(snap.present.filter((id) => ids.has(id)));
+      // knotted pairs leave together: a half-present pair means a stale snapshot, keep both
+      for (const k of level.knots || []) if (keep.has(k.a) !== keep.has(k.b)) { keep.add(k.a); keep.add(k.b); }
+      g.present = keep;
     }
     g.lives = snap.lives == null ? (Number.isFinite(level.lives) ? level.lives : Infinity) : num(snap.lives, level.lives);
     g.maxLives = snap.maxLives == null ? level.lives : num(snap.maxLives, level.lives);
@@ -2803,6 +3394,7 @@ b, strong { font-weight: 800; }
       stats: { cleared: 0, ribbons: 0, snags: 0, bestCombo: 0, flawlessRun: 0, noHintRun: 0, bosses: 0, playSeconds: 0 },
       settings: { sound: true, haptics: true },
       resume: null,
+      seen: {},                 // v3 mechanic explainers already shown: { weave: ts, knot: ts }
     };
   }
 
@@ -2874,6 +3466,17 @@ b, strong { font-weight: 800; }
       for (const k of Object.keys(src.settings)) {
         const v = src.settings[k];
         if (!(k in def.settings) && ['boolean', 'number', 'string'].includes(typeof v)) s.settings[k] = v;
+      }
+    }
+
+    // seen mechanics (explainer popups): open map of name -> timestamp; `true` from hand-edited saves counts as seen
+    s.seen = {};
+    if (isObj(src.seen)) {
+      for (const k of Object.keys(src.seen)) {
+        const v = src.seen[k];
+        if (!/^[a-z][a-z0-9_-]{0,23}$/.test(k)) continue;
+        if (isNum(v) && v > 0) s.seen[k] = v;
+        else if (v === true) s.seen[k] = 1;
       }
     }
 
@@ -3073,6 +3676,16 @@ b, strong { font-weight: 800; }
     Meta.state.resume = isObj(obj) ? clone(obj) : null;
     scheduleSave();
     emit('change', Meta.state);
+  }
+  /* v3: which mechanic explainers the player has already seen */
+  function hasSeen(mech) { return !!(typeof mech === 'string' && Meta.state.seen && Meta.state.seen[mech]); }
+  function markSeen(mech) {
+    if (typeof mech !== 'string' || !mech) return false;
+    if (!isObj(Meta.state.seen)) Meta.state.seen = {};
+    if (Meta.state.seen[mech]) return false;
+    Meta.state.seen[mech] = Date.now();
+    commit();
+    return true;
   }
   function getResume() { return Meta.state.resume ? clone(Meta.state.resume) : null; }
 
@@ -3296,7 +3909,7 @@ b, strong { font-weight: 800; }
     completeLevel, failLevel, recordZen, checkLogin,
     addButtons, addNeedles, spend, canAfford, useNeedle, revive,
     buyFabric, owns, setFabric, setSetting, zenUnlocked,
-    setResume, getResume, reset,
+    setResume, getResume, reset, hasSeen, markSeen,
     achievementProgress, tinProgress,
     on, off, emit,
     lastSaveOk: () => lastSaveOk,
@@ -3367,11 +3980,13 @@ b, strong { font-weight: 800; }
   let canvas = null, ctx = null, rafId = 0, ro = null;
   let dpr = 1, W = 0, H = 0;
   let fabric = null, pals = null, shadowCol = 'rgba(0,0,0,.4)', glowRgb = [255, 244, 200];
+  let xShadowRgb = [0, 0, 0], xShadowK = 1;   // weave: over ribbon's shadow onto the under one
   let tileBg = null, tilePatch = null;
   let level = null, game = null, demo = false;
   let clearBg = false;          // demo/home: no textured backdrop, the patch floats on the page background
   let L = null;                 // layout
-  let ribbons = [], byId = new Map();
+  let ribbons = [], byId = new Map();   // ribbons are kept sorted bottom -> top (weave z-order)
+  let mech = emptyMech();               // crossings / knots derived data (prepMech)
   let present = new Set();      // our view of present ids
   let shown = new Set();        // ids currently painted into the static layer
   let occ = null;               // Int32Array cell -> id | -1 (present ribbons)
@@ -3697,8 +4312,9 @@ b, strong { font-weight: 800; }
       mnC = Math.min(mnC, c); mxC = Math.max(mxC, c); mnR = Math.min(mnR, r); mxR = Math.max(mxR, r);
       sc += c; sr += r;
     }
+    const cumBase = cumOf(base);
     return {
-      id: a.id, a, dv, head, n, base, Lw: cumOf(base).pop(),
+      id: a.id, a, dv, head, n, base, cumBase, Lw: cumBase[cumBase.length - 1], z: 0,
       color: ((a.color | 0) % 6 + 6) % 6,
       cen: [sc / n, sr / n], cb: [mnC, mnR, mxC, mxR], geom: null, box: null,
     };
@@ -3708,6 +4324,176 @@ b, strong { font-weight: 800; }
     if (!L) return;
     const c = L.c, e = 0.14 * c + 2;
     rb.box = [L.ox + rb.cb[0] * c - e, L.oy + rb.cb[1] * c - e, L.ox + (rb.cb[2] + 1) * c + e, L.oy + (rb.cb[3] + 1) * c + e];
+    // a knot glyph straddles both ribbons: repaint its whole area whenever either ribbon changes
+    const kn = mech && mech.knotOf.get(rb.id);
+    if (kn) {
+      const [p, q] = kn.at, f = 0.25 * c + 2;
+      rb.box[0] = Math.min(rb.box[0], L.ox + Math.min(p[0], q[0]) * c - f);
+      rb.box[1] = Math.min(rb.box[1], L.oy + Math.min(p[1], q[1]) * c - f);
+      rb.box[2] = Math.max(rb.box[2], L.ox + (Math.max(p[0], q[0]) + 1) * c + f);
+      rb.box[3] = Math.max(rb.box[3], L.oy + (Math.max(p[1], q[1]) + 1) * c + f);
+    }
+  }
+
+  /* ------------------------------------------------------------------ weave & knots (gen 3) */
+  function emptyMech() { return { cross: [], knots: [], overs: new Map(), overOf: new Map(), partner: new Map(), knotOf: new Map() }; }
+  /* Derive z-order (topological: every under below its over) and lookup tables; sorts `rbs` bottom -> top. */
+  function prepMech(lv, rbs) {
+    const M = emptyMech();
+    const by = new Map(rbs.map((rb) => [rb.id, rb]));
+    const push = (m, k, v) => { if (!m.has(k)) m.set(k, []); m.get(k).push(v); };
+    const cellIdx = (rb, c, r) => rb.a.cells.findIndex((p) => p[0] === c && p[1] === r);
+    const unders = new Map();
+    for (const x of lv.crossings || []) {
+      const o = by.get(x.over), u = by.get(x.under);
+      if (!o || !u || x.over === x.under) continue;
+      const io = cellIdx(o, x.c, x.r);
+      if (io < 0 || cellIdx(u, x.c, x.r) < 0) continue;
+      const nb = o.a.cells[io - 1] || o.a.cells[io + 1];
+      const X = { c: x.c, r: x.r, over: x.over, under: x.under, overHoriz: nb ? nb[1] === x.r : true, pOver: o.cumBase[o.n - io] };
+      M.cross.push(X);
+      push(M.overs, x.under, x.over);
+      push(M.overOf, x.over, X);
+      push(unders, x.over, x.under);
+    }
+    // depth = longest chain of ribbons beneath (cycle-safe)
+    const depth = new Map(), busy = new Set();
+    const dep = (id) => {
+      if (depth.has(id)) return depth.get(id);
+      if (busy.has(id)) return 0;
+      busy.add(id);
+      let d = 0;
+      for (const u of unders.get(id) || []) d = Math.max(d, dep(u) + 1);
+      busy.delete(id);
+      depth.set(id, d);
+      return d;
+    };
+    rbs.forEach((rb, i) => { rb.z = dep(rb.id); rb.ord = i; });
+    rbs.sort((a, b) => a.z - b.z || a.ord - b.ord);
+    for (const k of lv.knots || []) {
+      const A = by.get(k.a), B = by.get(k.b);
+      if (!A || !B || !k.at || k.at.length < 2 || M.partner.has(k.a) || M.partner.has(k.b)) continue;
+      const ia = cellIdx(A, k.at[0][0], k.at[0][1]), ib = cellIdx(B, k.at[1][0], k.at[1][1]);
+      if (ia < 0 || ib < 0) continue;
+      const K = { a: k.a, b: k.b, at: k.at, ia, ib, i: M.knots.length };
+      M.knots.push(K);
+      M.partner.set(k.a, k.b); M.partner.set(k.b, k.a);
+      M.knotOf.set(k.a, K); M.knotOf.set(k.b, K);
+    }
+    return M;
+  }
+  const zOf = (id) => { const rb = byId.get(id); return rb ? rb.z : 0; };
+
+  /* Over ribbon's soft shadow falling onto the under ribbon (clipped to it): layered, blur-free bands that
+     darken the under right at the over's edges so the crossing reads as woven. k scales the strength. */
+  function paintCrossShadow(g, X, ug, c, k) {
+    if (!ug || k <= 0) return;
+    const px = cx(X.c), py = cy(X.r), h = 0.29 * c;
+    const grow = Math.max(0, k - 1), kk = Math.min(k, 1);
+    const S = (0.36 + 0.12 * grow) * c;                 // how far the soft shadow spreads past each edge
+    const off = (0.07 + 0.08 * grow) * c;               // light from the top-left: heavier below / right
+    const A = Math.min(0.95, 0.72 * xShadowK * kk * (1 + 0.35 * grow));
+    // across the over ribbon: 0 .. tuck at its edge .. (hidden under it) .. tuck .. 0
+    const lo = (X.overHoriz ? py : px) - h - S + off * 0.35, hi = (X.overHoriz ? py : px) + h + S + off;
+    const gr = X.overHoriz ? g.createLinearGradient(0, lo, 0, hi) : g.createLinearGradient(lo, 0, hi, 0);
+    const span = hi - lo, at = (v) => clamp((v - lo) / span, 0, 1);
+    const e0 = (X.overHoriz ? py : px) - h, e1 = (X.overHoriz ? py : px) + h;
+    const col = (a) => rgba(xShadowRgb, a);
+    gr.addColorStop(0, col(0));
+    gr.addColorStop(at(e0 - S * 0.45), col(A * 0.22));
+    gr.addColorStop(at(e0 - 0.05 * c), col(A * 0.62));
+    gr.addColorStop(at(e0), col(A * 0.8));
+    gr.addColorStop(at(e1), col(A * 0.9));
+    gr.addColorStop(at(e1 + 0.07 * c + off * 0.3), col(A * 0.75));
+    gr.addColorStop(at(e1 + S * 0.55 + off * 0.5), col(A * 0.25));
+    gr.addColorStop(1, col(0));
+    g.save();
+    g.clip(ug.outline);
+    g.fillStyle = gr;
+    if (X.overHoriz) g.fillRect(px - 0.62 * c, lo, 1.24 * c, span);
+    else g.fillRect(lo, py - 0.62 * c, span, 1.24 * c);
+    g.restore();
+  }
+
+  /* Tied-thread knot on the shared edge of two cells: two bow loops along the edge, a knot in the middle and
+     two short tails reaching onto each ribbon. A, B = the two ribbons' `at` points (they drift apart on exit). */
+  /* Knot thread colour: the fabric's `knot` (else `stitch`) colour, unless it is too close to either tied
+     ribbon (e.g. Tartan's gold on a gold ribbon, Felt's cream on its cream ribbon) — then cream, the fabric's
+     accent, or (last resort) dark: the first that contrasts with both ribbons. */
+  const rgbDist = (a, b) => Math.hypot((a[0] - b[0]) * 0.9, (a[1] - b[1]) * 1.2, (a[2] - b[2]) * 0.7);
+  function knotThread(K) {
+    const base = fabric.knot || fabric.stitch;
+    const ra = byId.get(K.a), rb = byId.get(K.b);
+    if (!ra || !rb || !pals) return base;
+    const cols = [pals[ra.color].rgb, pals[rb.color].rgb];
+    const minD = (hex) => { const q = hexToRgb(hex); return Math.min(rgbDist(q, cols[0]), rgbDist(q, cols[1])); };
+    // keep the fabric's own thread when it reads; else the first alternative that does; else the best one
+    // dark is the last resort: on dark fabrics a dark bow half-vanishes against the patch
+    const alts = [base, '#fff8e8', (fabric.ui && fabric.ui.accent) || '#f2b631', '#2a1f18'];
+    for (const h of alts) if (minD(h) >= 70) return h;
+    return alts.reduce((best, h) => (minD(h) > minD(best) ? h : best), base);
+  }
+  function paintKnot(g, A, B, c, rot, alpha, thread) {
+    thread = thread || fabric.knot || fabric.stitch;
+    let ux = B[0] - A[0], uy = B[1] - A[1];
+    const d = Math.hypot(ux, uy) || 1;
+    ux /= d; uy /= d;
+    const ex = -uy, ey = ux;
+    const P = (a, b) => [a * ux + b * ex, a * uy + b * ey];
+    const sep = d / c;
+    const fade = clamp(1 - (sep - 1.5) / 0.7, 0, 1) * (alpha == null ? 1 : alpha);
+    if (fade <= 0) return;
+    const tl = Math.max(0.3 * c, d / 2 - 0.12 * c);
+    const L1 = 0.34 * c, W1 = 0.15 * c;
+    const bow = new Path2D();
+    for (const sd of [-1, 1]) {
+      let q = P(0, 0); bow.moveTo(q[0], q[1]);
+      const a1 = P(-W1, sd * 0.1 * c), a2 = P(-W1, sd * L1), a3 = P(0, sd * L1);
+      bow.bezierCurveTo(a1[0], a1[1], a2[0], a2[1], a3[0], a3[1]);
+      const b1 = P(W1, sd * L1), b2 = P(W1, sd * 0.1 * c);
+      bow.bezierCurveTo(b1[0], b1[1], b2[0], b2[1], 0, 0);
+    }
+    const tails = new Path2D();
+    for (const sd of [-1, 1]) {
+      const m = P(sd * tl * 0.5, sd * 0.1 * c), e = P(sd * tl, sd * 0.02 * c);
+      tails.moveTo(0, 0);
+      tails.quadraticCurveTo(m[0], m[1], e[0], e[1]);
+    }
+    const w = Math.max(1.6, 0.08 * c), ow = w + Math.max(1.8, 0.07 * c);
+    const mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
+    g.save();
+    g.translate(mx, my);
+    if (rot) g.rotate(rot);
+    if (fade < 1) g.globalAlpha *= fade;
+    g.lineCap = 'round';
+    g.lineJoin = 'round';
+    // drop shadow
+    g.save();
+    g.translate(0, Math.max(1, 0.05 * c));
+    g.strokeStyle = 'rgba(0,0,0,0.3)';
+    g.lineWidth = ow;
+    g.stroke(bow); g.stroke(tails);
+    g.restore();
+    // dark outline, then thread
+    g.strokeStyle = KNOT_DARK;
+    g.lineWidth = ow;
+    g.stroke(bow); g.stroke(tails);
+    const kr = Math.max(2.2, 0.1 * c);
+    g.fillStyle = KNOT_DARK;
+    g.beginPath(); g.arc(0, 0, kr + (ow - w) / 2, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = thread;
+    g.lineWidth = w;
+    g.stroke(bow); g.stroke(tails);
+    g.fillStyle = thread;
+    g.beginPath(); g.arc(0, 0, kr, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(255,255,255,0.45)';
+    g.beginPath(); g.arc(-kr * 0.3, -kr * 0.35, kr * 0.38, 0, Math.PI * 2); g.fill();
+    g.restore();
+  }
+  const KNOT_DARK = 'rgba(24,16,12,0.9)';
+  function knotRestEnds(K) {
+    const p = K.at[0], q = K.at[1];
+    return [[cx(p[0]), cy(p[1])], [cx(q[0]), cy(q[1])]];
   }
   const staticGeom = (rb) => rb.geom || (rb.geom = ribbonGeom(rb.base.map((p) => [cx(p[0]), cy(p[1])]), L.c));
 
@@ -4037,10 +4823,45 @@ b, strong { font-weight: 800; }
     g.fillRect(0, 0, W, H);
   }
 
-  function paintRibbonsTo(g, list) {
+  /* `list` must be bottom->top ordered (a filter of `ribbons`). Painted level by level so an over ribbon's
+     shadows land on everything beneath it; knots go on top. alphaMap (preview) fades some ribbons. */
+  function paintRibbonsTo(g, list, alphaMap) {
     const c = L.c;
-    for (const rb of list) { const ge = staticGeom(rb); if (ge) paintShadow(g, ge, c, 0); }
-    for (const rb of list) { const ge = staticGeom(rb); if (ge) paintBody(g, ge, pals[rb.color], c); }
+    const inList = mech && (mech.cross.length || mech.knots.length) ? new Set(list.map((rb) => rb.id)) : null;
+    const al = (id) => (alphaMap && alphaMap.has(id) ? alphaMap.get(id) : 1);
+    let i = 0;
+    while (i < list.length) {
+      const z = list[i].z;
+      let j = i;
+      while (j < list.length && list[j].z === z) j++;
+      for (let k = i; k < j; k++) {
+        const ge = staticGeom(list[k]);
+        if (!ge) continue;
+        const a = al(list[k].id);
+        if (a < 1) g.globalAlpha = a * a;
+        paintShadow(g, ge, c, 0);
+        g.globalAlpha = 1;
+      }
+      if (z > 0 && inList)
+        for (let k = i; k < j; k++)
+          for (const X of mech.overOf.get(list[k].id) || [])
+            if (inList.has(X.under)) paintCrossShadow(g, X, staticGeom(byId.get(X.under)), c, Math.min(al(X.under), al(X.over)));
+      for (let k = i; k < j; k++) {
+        const ge = staticGeom(list[k]);
+        if (!ge) continue;
+        const a = al(list[k].id);
+        if (a < 1) g.globalAlpha = a;
+        paintBody(g, ge, pals[list[k].color], c);
+        g.globalAlpha = 1;
+      }
+      i = j;
+    }
+    if (inList)
+      for (const K of mech.knots)
+        if (inList.has(K.a) && inList.has(K.b)) {
+          const [A, B] = knotRestEnds(K);
+          paintKnot(g, A, B, c, 0, Math.min(al(K.a), al(K.b)), knotThread(K));
+        }
   }
   function rebuildAll(S) {
     const tr = performance.now();
@@ -4082,8 +4903,7 @@ b, strong { font-weight: 800; }
 
   /* Diff what should be in the static layer vs what is; patch dirty rects. */
   function syncStatic(t) {
-    const hidden = new Set();
-    for (const a of anims) if (a.id != null && (!a.hidesAt || a.hidesAt(t))) hidden.add(a.id);
+    const hidden = collectDynamic(t);
     const changed = [];
     for (const rb of ribbons) {
       const want = present.has(rb.id) && !hidden.has(rb.id);
@@ -4134,7 +4954,29 @@ b, strong { font-weight: 800; }
     for (const a of anims) if (a.resolve) a.resolve();
     anims = [];
   }
-  const PRI = { exit: 5, snag: 4, wiggle: 3, intro: 2, hint: 1, press: 0 };
+  const PRI = { exit: 5, snag: 4, wiggle: 3, lift: 3, intro: 2, hint: 1, press: 0, carry: -1 };
+  /* Ribbons drawn on the dynamic layer this frame: every animating ribbon plus (weave) every present ribbon
+     lying over one of them, so woven order survives e.g. a squash or tug of an under ribbon. */
+  function collectDynamic() {
+    const m = new Map();
+    for (const a of anims) {
+      if (a.id == null || !PRI.hasOwnProperty(a.type)) continue;
+      let e = m.get(a.id);
+      if (!e) m.set(a.id, (e = { id: a.id, prim: null, press: null }));
+      if (a.type === 'press') e.press = a;
+      if (!e.prim || PRI[a.type] > PRI[e.prim.type]) e.prim = a;
+    }
+    if (mech && mech.cross.length && m.size) {
+      const stack = [...m.keys()];
+      while (stack.length) {
+        const id = stack.pop();
+        for (const o of mech.overs.get(id) || [])
+          if (present.has(o) && !m.has(o)) { m.set(o, { id: o, prim: { type: 'carry', id: o }, press: null }); stack.push(o); }
+      }
+    }
+    return m;
+  }
+  const liftEnv = (a, t) => { const u = clamp((t - a.t0) / a.dur, 0, 1); return Math.sin(Math.PI * Math.pow(u, 0.55)); };
 
   function pressScale(a, t) {
     const u = clamp((t - a.t0) / a.dur, 0, 1);
@@ -4200,6 +5042,10 @@ b, strong { font-weight: 800; }
       const rot = (reduced ? 0.02 : 0.075) * Math.sin(u * Math.PI * 6) * env;
       const push = 0.1 * L.c * Math.sin(Math.min(1, u * 3) * Math.PI) * (1 - u);
       drawRibbonAt(g, rb, rb.base, t, { scale, rot, dx: a.dv[0] * push, dy: a.dv[1] * push });
+    } else if (a.type === 'lift') {
+      const u = clamp((t - a.t0) / a.dur, 0, 1), env = liftEnv(a, t);
+      const rot = (reduced ? 0.008 : 0.03) * Math.sin(u * Math.PI * 5) * (1 - u);
+      drawRibbonAt(g, rb, rb.base, t, { scale: scale * (1 + 0.035 * env), rot, lift: 0.1 * env });
     } else if (a.type === 'hint') {
       const u = (t - a.t0) / 1000;
       const br = reduced ? 1 : 1 + 0.035 * Math.sin(u * Math.PI * 2.4);
@@ -4364,7 +5210,23 @@ b, strong { font-weight: 800; }
   }
 
   function onSnagHit(a, t) {
+    if (a.quiet) return;
     const rb = byId.get(a.id);
+    if (a.pinned) {
+      // woven: the over ribbon holding it down lifts and wobbles
+      if (a.blockerId != null && byId.has(a.blockerId)) {
+        for (const o of anims) if (o.id === a.blockerId && (o.type === 'wiggle' || o.type === 'press' || o.type === 'lift')) o.dead = true;
+        spawn({ type: 'lift', id: a.blockerId, t0: t, dur: reduced ? 360 : 560 });
+      }
+      // the crossing is the lesson: a stronger, longer ring plus a second pulse
+      if (a.snagCell) {
+        const x = cx(a.snagCell[0]), y = cy(a.snagCell[1]);
+        spawn({ type: 'ring', id: null, t0: t, dur: 760, x, y, strong: true });
+        if (!reduced) spawn({ type: 'ring', id: null, t0: t + 300, dur: 700, x, y, strong: true });
+      }
+      R.shake(0.35);
+      return;
+    }
     if (a.blockerId != null && byId.has(a.blockerId)) {
       for (const o of anims) if (o.id === a.blockerId && (o.type === 'wiggle' || o.type === 'press')) o.dead = true;
       spawn({ type: 'wiggle', id: a.blockerId, t0: t, dur: 460, dv: rb ? rb.dv : [0, 0] });
@@ -4456,10 +5318,23 @@ b, strong { font-weight: 800; }
   }
 
   function drawRing(g, a, t) {
+    if (t < a.t0) return; // delayed pulse not started yet
     const u = clamp((t - a.t0) / a.dur, 0, 1);
-    const c = L.c;
+    const c = L.c, px = 1 / (view.s || 1);
     const col = hexToRgb((fabric.ui && fabric.ui.danger) || '#ff5a4e');
     g.save();
+    if (a.strong) {
+      // pinned: circle the whole crossing without covering it, so the over/under order stays readable inside
+      const rad = c * (0.55 + 0.4 * easeOutCubic(u));
+      g.strokeStyle = rgba(col, 1 - u * 0.8);
+      g.lineWidth = Math.max(3 * px, c * 0.13 * (1 - u * 0.4));
+      g.beginPath(); g.arc(a.x, a.y, rad, 0, Math.PI * 2); g.stroke();
+      g.strokeStyle = rgba(WHITE, 0.85 * (1 - u));
+      g.lineWidth = Math.max(1.2 * px, c * 0.04);
+      g.beginPath(); g.arc(a.x, a.y, rad, 0, Math.PI * 2); g.stroke();
+      g.restore();
+      return;
+    }
     g.fillStyle = rgba(col, 0.35 * (1 - u));
     g.beginPath(); g.arc(a.x, a.y, c * (0.35 + 0.15 * u), 0, Math.PI * 2); g.fill();
     g.strokeStyle = rgba(col, 1 - u);
@@ -4471,19 +5346,67 @@ b, strong { font-weight: 800; }
     g.restore();
   }
 
+  function drawDynCrossShadows(g, prim, t) {
+    for (const X of mech.overOf.get(prim.id) || []) {
+      if (!present.has(X.under)) continue;
+      let k = 1;
+      if (prim.type === 'exit' || prim.type === 'snag') k = clamp((X.pOver - prim.s - 0.3) / 0.4, 0, 1);
+      else if (prim.type === 'lift') k = 1 + 0.8 * liftEnv(prim, t);
+      if (k > 0) paintCrossShadow(g, X, staticGeom(byId.get(X.under)), L.c, k);
+    }
+  }
+  // where a ribbon's cell i currently is (px): follows exit / snag motion along the ribbon's path
+  function atPoint(id, i, dyn) {
+    const rb = byId.get(id), e = dyn.get(id);
+    if (e && (e.prim.type === 'exit' || e.prim.type === 'snag')) {
+      const q = pointAt(e.prim.poly, e.prim.cum, e.prim.s + rb.cumBase[rb.n - i]);
+      return [cx(q[0]), cy(q[1])];
+    }
+    const p = rb.a.cells[i];
+    return [cx(p[0]), cy(p[1])];
+  }
+  function drawDynKnots(g, dyn, t) {
+    for (const K of mech.knots) {
+      if (shown.has(K.a) && shown.has(K.b)) continue;               // in the static layer
+      const vis = (id) => present.has(id) || (dyn.has(id) && dyn.get(id).prim.type === 'exit');
+      if (!vis(K.a) || !vis(K.b)) continue;
+      const ea = dyn.get(K.a), eb = dyn.get(K.b);
+      if ((ea && ea.prim.type === 'intro') || (eb && eb.prim.type === 'intro')) continue;
+      let rot = 0;
+      for (const a of anims)
+        if (a.type === 'kjig' && a.knot === K.i && t >= a.t0) {
+          const u = clamp((t - a.t0) / a.dur, 0, 1);
+          rot += (reduced ? 0.12 : 0.42) * Math.sin(u * Math.PI * 7) * Math.pow(1 - u, 1.5);
+        }
+      paintKnot(g, atPoint(K.a, K.ia, dyn), atPoint(K.b, K.ib, dyn), L.c, rot, 1, knotThread(K));
+    }
+  }
+
   /* ------------------------------------------------------------------ demo loop */
-  function freeIdsLocal() {
-    const out = [];
-    for (const rb of ribbons) {
-      if (!present.has(rb.id)) continue;
-      let [c, r] = rb.head, ok = true;
+  /* Removal units (a ribbon, or a knotted pair) that could leave now — same rules as LE.Game (demo mode). */
+  function freeUnitsLocal() {
+    const at = new Map();
+    for (const rb of ribbons) if (present.has(rb.id)) for (const [c, r] of rb.a.cells) { const k = r * level.cols + c; if (!at.has(k)) at.set(k, []); at.get(k).push(rb.id); }
+    const pinned = (id) => (mech.overs.get(id) || []).some((o) => present.has(o));
+    const can = (id) => {
+      const rb = byId.get(id);
+      if (!rb || pinned(id)) return false;
+      let [c, r] = rb.head;
       for (;;) {
         c += rb.dv[0]; r += rb.dv[1];
-        if (c < 0 || r < 0 || c >= level.cols || r >= level.rows) break;
-        const o = occAt(c, r);
-        if (o !== -1 && o !== rb.id) { ok = false; break; }
+        if (c < 0 || r < 0 || c >= level.cols || r >= level.rows) return true;
+        const ids = at.get(r * level.cols + c);
+        if (ids && ids.some((x) => x !== id)) return false;
       }
-      if (ok) out.push(rb.id);
+    };
+    const out = [], seen = new Set();
+    for (const rb of ribbons) {
+      const id = rb.id;
+      if (!present.has(id) || seen.has(id)) continue;
+      seen.add(id);
+      const p = mech.partner.get(id);
+      if (p != null && present.has(p)) { seen.add(p); if (can(id) && can(p)) out.push([id, p]); }
+      else if (can(id)) out.push([id]);
     }
     return out;
   }
@@ -4501,7 +5424,7 @@ b, strong { font-weight: 800; }
     const d = demoState;
     if (!d || t < d.next) return;
     if (anims.some((a) => a.type === 'exit' || a.type === 'intro')) { d.next = t + 200; return; }
-    const free = present.size ? freeIdsLocal() : [];
+    const free = present.size ? freeUnitsLocal() : [];
     if (!free.length || d.removed >= 14) {
       present = new Set(ribbons.map((rb) => rb.id));
       rebuildOcc();
@@ -4509,11 +5432,12 @@ b, strong { font-weight: 800; }
       d.next = t + startIntro(t) + 1500;
       return;
     }
-    const id = free[Math.floor(Math.random() * free.length)];
-    present.delete(id);
+    const unit = free[Math.floor(Math.random() * free.length)];
+    const id = unit[0], pid = unit.length > 1 ? unit[1] : null;
+    for (const x of unit) present.delete(x);
     rebuildOcc();
     d.removed++;
-    R.exit(id, { ok: true, id, exitPath: exitPathLocal(byId.get(id)) });
+    R.exit(id, { ok: true, id, exitPath: exitPathLocal(byId.get(id)), partner: pid == null ? null : { id: pid, exitPath: exitPathLocal(byId.get(pid)) } });
     d.next = t + (present.size ? 1400 : 1900);
   }
 
@@ -4579,21 +5503,16 @@ b, strong { font-weight: 800; }
     if (L) {
       // hint underlays
       for (const a of anims) if (a.type === 'hint') drawHintUnder(ctx, a, t);
-      // group ribbon anims by id
-      const byRib = new Map();
-      for (const a of anims) {
-        if (a.id == null || !PRI.hasOwnProperty(a.type)) continue;
-        let e = byRib.get(a.id);
-        if (!e) byRib.set(a.id, (e = { prim: null, press: null }));
-        if (a.type === 'press') e.press = a;
-        if (!e.prim || PRI[a.type] > PRI[e.prim.type]) e.prim = a;
-      }
-      const list = [...byRib.values()].sort((a, b) => PRI[a.prim.type] - PRI[b.prim.type]);
+      // animating (and carried) ribbons, bottom -> top
+      const dyn = collectDynamic(t);
+      const list = [...dyn.values()].sort((a, b) => zOf(a.id) - zOf(b.id) || PRI[a.prim.type] - PRI[b.prim.type]);
       for (const e of list) {
-        if (e.prim.type !== 'exit' && e.prim.type !== 'snag' && !present.has(e.prim.id)) continue;
+        if (e.prim.type !== 'exit' && e.prim.type !== 'snag' && !present.has(e.id)) continue;
         const sc = e.press ? pressScale(e.press, t) : 1;
+        if (mech.cross.length && e.prim.type !== 'intro') drawDynCrossShadows(ctx, e.prim, t);
         drawPrimary(ctx, e.prim, t, sc);
       }
+      if (mech.knots.length) drawDynKnots(ctx, dyn, t);
       for (const a of anims) if (a.type === 'hint') drawHintOver(ctx, a, t);
       for (const a of anims) if (a.type === 'ring') drawRing(ctx, a, t);
     }
@@ -4720,13 +5639,18 @@ b, strong { font-weight: 800; }
     if (!rafId) rafId = requestAnimationFrame(frame);
   };
 
-  R.setFabric = function (f) {
-    if (!f) return;
+  function fabricVars(f) {
     fabric = f;
     pals = makePalettes(f);
     const bg = hexToRgb(f.bg);
     shadowCol = f.dark ? rgba(mix(bg, BLACK, 0.6), 0.55) : rgba(mix(hexToRgb(f.patch2), [60, 40, 20], 0.55), 0.38);
     glowRgb = f.dark ? [255, 243, 196] : hexToRgb((f.ui && f.ui.accent) || f.stitch);
+    xShadowRgb = f.dark ? mix(bg, BLACK, 0.75) : [45, 30, 18];
+    xShadowK = f.dark ? 1.0 : 0.8;
+  }
+  R.setFabric = function (f) {
+    if (!f) return;
+    fabricVars(f);
     freeCanvas(tileBg); freeCanvas(tilePatch);
     tileBg = tilePatch = null;
     invalidateAll();
@@ -4743,6 +5667,7 @@ b, strong { font-weight: 800; }
     demoState = null;
     ribbons = level ? level.arrows.map(prepRibbon) : [];
     byId = new Map(ribbons.map((rb) => [rb.id, rb]));
+    mech = level ? prepMech(level, ribbons) : emptyMech();
     shown = new Set();
     lastPresentRef = null;
     lastPresentSize = -1;
@@ -4761,7 +5686,7 @@ b, strong { font-weight: 800; }
   R.clear = function () {
     cancelAll();
     level = null; game = null; demo = false; demoState = null; clearBg = false;
-    ribbons = []; byId = new Map(); present = new Set(); shown = new Set(); occ = null;
+    ribbons = []; byId = new Map(); present = new Set(); shown = new Set(); occ = null; mech = emptyMech();
     L = null;
     setViewNow(1, 0, 0);
     if (zset) { freeSet(zset); zset = null; }
@@ -4795,6 +5720,12 @@ b, strong { font-weight: 800; }
   };
 
   R.exit = function (id, res) {
+    const ps = [startExit(id, res)];
+    const pt = res && res.partner;
+    if (pt && pt.id != null && pt.id !== id) ps.push(startExit(pt.id, pt));
+    return Promise.all(ps).then(() => undefined);
+  };
+  function startExit(id, res) {
     return new Promise((resolve) => {
       const rb = byId.get(id);
       if (!rb || !L) { resolve(); return; }
@@ -4825,34 +5756,59 @@ b, strong { font-weight: 800; }
       a.cum = cumOf(a.poly);
       frameDirty = true;
     });
-  };
+  }
 
-  R.snag = function (id, res) {
+  function startSnag(id, o) {
     const rb = byId.get(id);
-    if (!rb || !L) return;
-    cancel(id, ['snag', 'hint', 'wiggle']);
-    const travel = Math.max(0, (res && res.travel) | 0);
-    const D = travel + 0.35;
+    if (!rb) return;
+    cancel(id, ['snag', 'hint', 'wiggle', 'lift']);
+    const reach = Math.max(3, Math.ceil(o.D) + 3);
     const poly = rb.base.map((p) => [p[0], p[1]]);
-    poly.push([rb.head[0] + rb.dv[0] * (travel + 3), rb.head[1] + rb.dv[1] * (travel + 3)]);
+    poly.push([rb.head[0] + rb.dv[0] * reach, rb.head[1] + rb.dv[1] * reach]);
     const P = clean(poly);
     anims.push({
-      type: 'snag', id, t0: now(), poly: P, cum: cumOf(P), s: 0, D,
-      Tl: Math.min(70 + 30 * D, 420), Ts: reduced ? 260 : Math.min(600, 420 + D * 10), hit: false,
-      blockerId: res ? res.blockerId : null, snagCell: res ? res.snagCell : null,
+      type: 'snag', id, t0: now() + (o.delay || 0), poly: P, cum: cumOf(P), s: 0, D: o.D, Tl: o.Tl, Ts: o.Ts, hit: false,
+      blockerId: o.blockerId != null ? o.blockerId : null, snagCell: o.snagCell || null, pinned: !!o.pinned, quiet: !!o.quiet,
     });
+  }
+  R.snag = function (id, res) {
+    if (!L) return;
+    res = res || {};
+    const stuck = res.id != null ? res.id : id;
+    const tapped = res.tappedId != null ? res.tappedId : id;
+    if (!byId.has(stuck)) return;
+    if (res.reason === 'pinned') {
+      // held down under a crossing: a short tug along its direction, then spring back
+      startSnag(stuck, { D: 0.2, Tl: 90, Ts: reduced ? 220 : 380, blockerId: res.blockerId, snagCell: res.snagCell, pinned: true });
+    } else {
+      const travel = Math.max(0, res.travel | 0);
+      const D = travel + 0.35;
+      startSnag(stuck, { D, Tl: Math.min(70 + 30 * D, 420), Ts: reduced ? 260 : Math.min(600, 420 + D * 10), blockerId: res.blockerId, snagCell: res.snagCell });
+    }
+    if (tapped !== stuck && byId.has(tapped)) {
+      // knotted pair: the tapped ribbon tugs too and the knot jiggles
+      startSnag(tapped, { D: 0.2, Tl: 90, Ts: reduced ? 220 : 380, quiet: true });
+      const K = mech.knotOf.get(tapped);
+      if (K) anims.push({ type: 'kjig', id: null, knot: K.i, t0: now() + 70, dur: reduced ? 300 : 560 });
+    }
     frameDirty = true;
   };
 
   R.hint = function (id) {
     if (!byId.has(id) || !present.has(id)) return;
     anims = anims.filter((a) => a.type !== 'hint');
-    anims.push({ type: 'hint', id, t0: now(), dur: 2500 });
+    const t0 = now();
+    const ids = [id];
+    const pid = mech.partner.get(id);
+    if (pid != null && present.has(pid)) ids.push(pid);          // knotted: glow both, both rays
+    for (const x of ids) anims.push({ type: 'hint', id: x, t0, dur: 2500 });
     frameDirty = true;
-    // zoomed in and the hinted ribbon is (partly) off-screen: glide the view so it is centred
+    // zoomed in and the hinted ribbon(s) (partly) off-screen: glide the view so they are centred
     const rb = byId.get(id);
     if (rb && L && view.s > 1 && !gesture) {
-      const vr = visRect(view), b = rb.box, m = L.c * 0.3;
+      const b = rb.box.slice();
+      for (const x of ids.slice(1)) { const o = byId.get(x).box; b[0] = Math.min(b[0], o[0]); b[1] = Math.min(b[1], o[1]); b[2] = Math.max(b[2], o[2]); b[3] = Math.max(b[3], o[3]); }
+      const vr = visRect(view), m = L.c * 0.3;
       if (b[0] < vr[0] + m || b[1] < vr[1] + m || b[2] > vr[2] - m || b[3] > vr[3] - m) {
         const to = { s: view.s, tx: W / 2 - view.s * (b[0] + b[2]) / 2, ty: H / 2 - view.s * (b[1] + b[3]) / 2 };
         clampView(to);
@@ -5029,15 +5985,74 @@ b, strong { font-weight: 800; }
     if (instant || reduced) setViewNow(1, 0, 0);
     else { zoomAnim = { from: { ...view }, to: { s: 1, tx: 0, ty: 0 }, t0: now(), dur: 240 }; frameDirty = true; }
   };
+  /* Client (viewport) coordinates of a cell centre through layout + zoom/pan, plus the on-screen cell size.
+     Used by the UI to anchor feedback (e.g. the "Pinned underneath!" toast) to the crossing, not the finger. */
+  R.cellToClient = function (c, r) {
+    if (!canvas || !L) return null;
+    const rect = canvas.getBoundingClientRect();
+    return { x: rect.left + view.tx + view.s * cx(c), y: rect.top + view.ty + view.s * cy(r), size: L.c * view.s };
+  };
   R.zoomState = function () {
     return { scale: +view.s.toFixed(3), canZoom: canZoomNow(), maxScale: +maxScale().toFixed(3) };
+  };
+
+  /* One static frame of a (small) level into any canvas — explainer popups. Same drawing code as the board
+     (crossings, knots). opts.highlight: ids to glow, opts.dim: ids to fade, opts.background:false = no backdrop. */
+  R.drawPreview = function (cv, lv, fab, opts) {
+    if (!cv || !lv || !lv.arrows) return;
+    opts = opts || {};
+    if (typeof fab === 'string') fab = LE.fabric ? LE.fabric(fab) : null;
+    fab = fab || fabric || (LE.FABRICS && LE.FABRICS[0]);
+    if (!fab) return;
+    // CSS size: laid-out size if in the DOM, else the first-seen width/height attributes
+    let cw = 0, ch = 0;
+    try { const r = cv.getBoundingClientRect(); cw = Math.round(r.width); ch = Math.round(r.height); } catch (e) { /* ignore */ }
+    if (!cw || !ch) {
+      if (!cv._leCss) cv._leCss = [cv.width || 300, cv.height || 150];
+      [cw, ch] = cv._leCss;
+      if (!cv.style.width) { cv.style.width = cw + 'px'; cv.style.height = ch + 'px'; }
+    }
+    const pd = Math.min(3, Math.max(1, root.devicePixelRatio || 1));
+    const saved = { level, L, pals, fabric, shadowCol, glowRgb, xShadowRgb, xShadowK, dpr, W, H, ribbons, byId, mech, tileBg, tilePatch, clearBg, present, shown };
+    try {
+      fabricVars(fab);
+      level = lv; W = cw; H = ch; dpr = pd; clearBg = opts.background === false;
+      tileBg = tilePatch = null;
+      ribbons = lv.arrows.map(prepRibbon);
+      byId = new Map(ribbons.map((rb) => [rb.id, rb]));
+      mech = prepMech(lv, ribbons);
+      present = new Set(ribbons.map((rb) => rb.id));
+      shown = present;
+      computeLayout();
+      if (!L) return;
+      cv.width = Math.round(cw * pd); cv.height = Math.round(ch * pd);
+      const g = cv.getContext('2d');
+      const S = { bg: cv, bgCtx: g, st: null, s: 1, tx: 0, ty: 0 };
+      buildBg(S);
+      setM(g, S);
+      const hi = new Set(opts.highlight || []);
+      const alpha = new Map((opts.dim || []).map((id) => [id, 0.3]));
+      g.save();
+      g.lineJoin = 'round';
+      for (const rb of ribbons) {
+        if (!hi.has(rb.id)) continue;
+        const ge = staticGeom(rb);
+        if (!ge) continue;
+        [[0.8, 0.2], [0.5, 0.34], [0.26, 0.75]].forEach(([w, a]) => { g.lineWidth = w * L.c; g.strokeStyle = rgba(glowRgb, a); g.stroke(ge.outline); });
+      }
+      g.restore();
+      paintRibbonsTo(g, ribbons, alpha);
+    } finally {
+      freeCanvas(tileBg); freeCanvas(tilePatch);
+      ({ level, L, pals, fabric, shadowCol, glowRgb, xShadowRgb, xShadowK, dpr, W, H, ribbons, byId, mech, tileBg, tilePatch, clearBg, present, shown } = saved);
+    }
   };
 
   /* debug / test helpers (not part of the contract) */
   R._perf = perf;
   R._setClock = (fn) => { clockFn = fn || null; lastT = 0; };
   R._setView = (sc, tx, ty) => setViewNow(sc, tx, ty);
-  R._state = () => ({ W, H, dpr, view: { ...view }, zset: !!zset, layout: L && { c: L.c, m: L.m, ox: L.ox, oy: L.oy }, anims: anims.length, particles: particles.length, shown: shown.size, present: present.size });
+  R._state = () => ({ W, H, dpr, view: { ...view }, zset: !!zset, layout: L && { c: L.c, m: L.m, ox: L.ox, oy: L.oy }, anims: anims.length, hints: anims.filter((a) => a.type === 'hint').map((a) => a.id), particles: particles.length, shown: shown.size, present: present.size });
 
   LE.Render = R;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -5195,6 +6210,7 @@ b, strong { font-weight: 800; }
       'fail-title', 'fail-sub', 'fail-revive', 'fail-revive-lbl', 'fail-cost',
       'set-sound', 'set-sound-ic', 'set-haptics', 'set-reset', 'set-reset-lbl', 'set-version',
       'tin-btn', 'tin-loot', 'tin-hint', 'tin-collect', 'login-title', 'login-strip', 'btn-fit', 'zoomtip',
+      'btn-rules', 'mech-step', 'mech-tag', 'mech-name', 'mech-canvas', 'mech-svg', 'mech-cap', 'mech-rules', 'mech-ok',
     ].forEach((id) => (els[id] = $(id)));
 
     // single delegated click handler for everything with data-action
@@ -5208,6 +6224,7 @@ b, strong { font-weight: 800; }
     // keep home stage window in sync with layout
     const relayout = () => { if (UI.screen === 'home' || UI.screen === 'page') UI.layoutHome(); };
     root.addEventListener('resize', relayout);
+    root.addEventListener('resize', () => { if (UI.overlayId === 'modal-mech' && UI._mech) UI._drawMech(UI._mech.mech); });
     try { new ResizeObserver(relayout).observe(els['home-window']); } catch (e) {}
     if (els['set-version']) els['set-version'].textContent = 'v' + (LE.VERSION || '1.0.0');
   };
@@ -5218,6 +6235,7 @@ b, strong { font-weight: 800; }
       case 'tin-open': UI._openTin(); return true;
       case 'tin-collect': UI._collectTin(); return true;
       case 'login-collect': UI._collectLogin(); return true;
+      case 'mech-ok': UI._closeMechanic(); return true;
       case 'scrim': if (UI.overlayId === 'sheet-settings') { sfx('ui'); UI.closeOverlay(); } return true;
       case 'close-sheet': sfx('ui'); UI.closeOverlay(); return true;
       case 'set-reset': {
@@ -5386,6 +6404,19 @@ b, strong { font-weight: 800; }
     UI.hudProgress(info.remaining, info.total, true);
     UI.hudHint(info.needles);
     UI.coach(info.tutorial || null);
+    UI.setRules(info.mechanics);
+  };
+  /* HUD "?" button: only for boards that use a v3 mechanic we can explain */
+  UI.nudgeRules = function () {
+    const b = els['btn-rules'];
+    if (!b || b.hidden || reduced()) return;
+    b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
+    setTimeout(() => b.classList.remove('nudge'), 3000);
+  };
+  UI.setRules = function (mechs) {
+    const known = (mechs || []).filter((m) => MECH[m]);
+    if (els['btn-rules']) els['btn-rules'].hidden = !known.length;
+    return known;
   };
   UI.hudLives = function (lives, maxLives, o) {
     o = o || {};
@@ -5473,9 +6504,12 @@ b, strong { font-weight: 800; }
     el.className = 'pop' + (cls ? ' ' + cls : '');
     el.textContent = text;
     const w = root.innerWidth || 390, h = root.innerHeight || 800;
-    el.style.left = clamp(x == null ? w / 2 : x, 80, w - 80) + 'px';
     el.style.top = clamp(y == null ? h / 2 : y - 18, 90, h - 40) + 'px';
     els.fx.appendChild(el);
+    // keep the whole word on screen (long toasts like "Pinned underneath!" near an edge)
+    // (the pop-in animation overshoots to 1.15x, and the text stroke adds a few px: clamp for the peak size)
+    const hw = Math.min(w / 2, ((el.offsetWidth || 160) * 1.15) / 2 + 8);
+    el.style.left = clamp(x == null ? w / 2 : x, hw, w - hw) + 'px';
     const kill = () => el.remove();
     el.addEventListener('animationend', kill);
     setTimeout(kill, 1400);
@@ -5722,7 +6756,138 @@ b, strong { font-weight: 800; }
     UI.closeOverlay().then(() => { UI.holdBalances(false); st.resolve(); });
   };
 
+  /* ------------------------------------------------------------------ v3 mechanic explainers */
+  /* Tiny hand-made boards drawn with the real renderer (LE.Render.drawPreview). */
+  const mini = (id, cols, rows, arrows, extra) => Object.assign({
+    id, num: 0, kind: 'normal', cols, rows, mask: null, gen: 3, lives: 3, timeLimit: null, tutorial: null, intro: null,
+    arrows, crossings: [], knots: [], mechanics: [],
+  }, extra);
+  const MECH = {
+    weave: {
+      name: 'Woven ribbons',
+      rules: ['Ribbons can cross over and under each other.', 'The one on top must leave first.', 'A ribbon pinned underneath snags, even when its path looks clear.'],
+      cap: 'Top ribbon first',
+      // the long horizontal ribbon (0) lies over the vertical one (1); 1 points at a clear edge but is pinned
+      level: mini('MECH-weave', 5, 3, [
+        { id: 0, cells: [[4, 1], [3, 1], [2, 1], [1, 1], [0, 1]], dir: 'R', color: 0 },
+        { id: 1, cells: [[2, 0], [2, 1], [2, 2]], dir: 'U', color: 2 },
+      ], { crossings: [{ c: 2, r: 1, over: 0, under: 1 }], mechanics: ['weave'] }),
+      highlight: [0], dim: [],
+    },
+    knot: {
+      name: 'Knotted pairs',
+      rules: ['Knotted ribbons leave together.', 'Tap either one. Both paths must be clear.', 'If either is blocked, they both snag.'],
+      cap: 'Clear the blocker, then the pair can go',
+      // 0 (top, free) is tied to 1 (middle, blocked by 2) -> the pair waits for 2
+      level: mini('MECH-knot', 5, 3, [
+        { id: 0, cells: [[0, 0], [1, 0], [2, 0]], dir: 'L', color: 1 },
+        { id: 1, cells: [[3, 1], [2, 1], [1, 1]], dir: 'R', color: 3 },
+        { id: 2, cells: [[4, 2], [4, 1], [4, 0]], dir: 'D', color: 4 },
+      ], { knots: [{ a: 0, b: 1, at: [[1, 0], [1, 1]] }], mechanics: ['knot'] }),
+      highlight: [2], dim: [],
+    },
+  };
+  UI.MECH = MECH;
+
+  /* opts: { isNew, step, steps } -> Promise resolved on "Got it" */
+  UI.showMechanic = function (mech, opts) {
+    opts = opts || {};
+    const M = MECH[mech];
+    if (!M) return Promise.resolve();
+    return new Promise((resolve) => {
+      UI._mech = { mech, resolve };
+      const isNew = opts.isNew !== false;
+      els['mech-tag'].firstChild.nodeValue = isNew ? 'New' : 'Rules';
+      els['mech-tag'].classList.toggle('rules', !isNew);
+      els['mech-name'].textContent = M.name;
+      const multi = (opts.steps || 1) > 1;
+      els['mech-step'].hidden = !multi;
+      if (multi) els['mech-step'].textContent = opts.step + ' of ' + opts.steps;
+      els['mech-rules'].innerHTML = M.rules.map((t, i) => '<li style="animation-delay:' + (180 + i * 90) + 'ms">' + esc(t) + '</li>').join('');
+      els['mech-cap'].textContent = M.cap;
+      els['mech-ok'].textContent = 'Got it';
+      UI.openOverlay('modal-mech');
+      // restart the entrance animation even when two popups follow each other
+      const card = els['mech-ok'].parentElement;
+      card.classList.remove('enter'); void card.offsetWidth; card.classList.add('enter');
+      requestAnimationFrame(() => UI._drawMech(mech));
+      sfx(isNew ? 'unlock' : 'ui');
+    });
+  };
+  UI._drawMech = function (mech) {
+    const M = MECH[mech];
+    const cv = els['mech-canvas'], box = els['mech-svg'];
+    const f = UI.fabric || (LE.FABRICS && LE.FABRICS[0]);
+    let drawn = false;
+    if (LE.Render && typeof LE.Render.drawPreview === 'function') {
+      try {
+        // Draw into a detached canvas sized from layout (offsetWidth/Height ignore the entrance scale
+        // animation, which getBoundingClientRect would report), then blit it at device resolution.
+        cv.hidden = false;
+        const w = cv.offsetWidth || 300, h = cv.offsetHeight || 132;
+        const off = doc.createElement('canvas');
+        off.width = w; off.height = h;
+        LE.Render.drawPreview(off, M.level, f, { highlight: M.highlight, dim: M.dim, background: false });
+        if (off.width > 0 && off.height > 0) {
+          cv.width = off.width; cv.height = off.height;
+          const g = cv.getContext('2d');
+          g.clearRect(0, 0, cv.width, cv.height);
+          g.drawImage(off, 0, 0);
+          drawn = true;
+        }
+      } catch (e) { drawn = false; }
+    }
+    cv.hidden = !drawn;
+    box.hidden = drawn;
+    if (!drawn) box.innerHTML = mechSvg(M.level, f, M.highlight, M.dim);
+  };
+  UI._closeMechanic = function () {
+    const st = UI._mech;
+    if (!st) return;
+    UI._mech = null;
+    hap('light');
+    UI.closeOverlay().then(() => st.resolve());
+  };
+  /* Fallback illustration (no drawPreview): flat SVG ribbons with over/under order and knot glyphs. */
+  function mechSvg(lv, f, hi, dim) {
+    const S = 20, pad = 8, W = lv.cols * S + pad * 2, H = lv.rows * S + pad * 2;
+    const D = LE.DIRS || { U: { dc: 0, dr: -1 }, D: { dc: 0, dr: 1 }, L: { dc: -1, dr: 0 }, R: { dc: 1, dr: 0 } };
+    const cx = (c) => pad + (c + 0.5) * S, cy = (r) => pad + (r + 0.5) * S;
+    const under = new Set((lv.crossings || []).map((x) => x.under));
+    const order = lv.arrows.slice().sort((a, b) => (under.has(b.id) ? 1 : 0) - (under.has(a.id) ? 1 : 0));
+    const hs = new Set(hi || []), ds = new Set(dim || []);
+    let out = '<svg viewBox="0 0 ' + W + ' ' + H + '"><rect x="2" y="2" width="' + (W - 4) + '" height="' + (H - 4) + '" rx="10" fill="' + f.patch + '"/>' +
+      '<rect x="5" y="5" width="' + (W - 10) + '" height="' + (H - 10) + '" rx="8" fill="none" stroke="' + f.stitch + '" stroke-opacity=".6" stroke-dasharray="3 2.5"/>';
+    for (const a of order) {
+      const d = D[a.dir], col = f.ribbons[a.color % f.ribbons.length];
+      const pts = a.cells.map(([c, r]) => [cx(c), cy(r)]);
+      const hx = pts[0][0] + d.dc * S * 0.1, hy = pts[0][1] + d.dr * S * 0.1;
+      const tail = a.cells.length > 1 ? pts : pts.concat([[pts[0][0] - d.dc * S * 0.3, pts[0][1] - d.dr * S * 0.3]]);
+      const poly = [[hx, hy]].concat(tail).map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+      const px = -d.dr, py = d.dc, tip = [hx + d.dc * S * 0.45, hy + d.dr * S * 0.45];
+      const head = [tip, [hx + px * S * 0.36, hy + py * S * 0.36], [hx - px * S * 0.36, hy - py * S * 0.36]].map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+      out += '<g opacity="' + (ds.has(a.id) ? 0.3 : 1) + '">' +
+        (hs.has(a.id) ? '<polyline points="' + poly + '" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="' + S * 0.95 + '" stroke-linecap="round" stroke-linejoin="round"/>' : '') +
+        '<polyline points="' + poly + '" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="' + S * 0.56 + '" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 1.4)"/>' +
+        '<polyline points="' + poly + '" fill="none" stroke="' + col + '" stroke-width="' + S * 0.54 + '" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<polygon points="' + head + '" fill="' + col + '"/>' +
+        '<polyline points="' + poly + '" fill="none" stroke="' + f.stitch + '" stroke-opacity=".8" stroke-width="1" stroke-dasharray="2.2 1.8"/></g>';
+    }
+    for (const k of lv.knots || []) {
+      const [[c1, r1], [c2, r2]] = k.at, x = (cx(c1) + cx(c2)) / 2, y = (cy(r1) + cy(r2)) / 2;
+      out += '<path d="M' + (x - 1) + ' ' + y + ' q-5 4 -6 8 M' + (x + 1) + ' ' + y + ' q5 4 6 8" stroke="' + f.stitch + '" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+        '<circle cx="' + x + '" cy="' + y + '" r="3.6" fill="' + f.stitch + '" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/>';
+    }
+    return out + '</svg>';
+  }
+
   /* ------------------------------------------------------------------ level map */
+  /* designed introduction level for a v3 mechanic (level.intro); falls back to the SPEC numbers */
+  function introAt(n) {
+    try { if (LE.Levels && typeof LE.Levels.introAt === 'function') return LE.Levels.introAt(n) || null; } catch (e) {}
+    return n === 11 ? 'weave' : n === 25 ? 'knot' : null;
+  }
+  UI.introAt = introAt;
   UI.renderMap = function (state, isBoss) {
     const s = state || mstate() || { level: 1, stars: {} };
     isBoss = isBoss || ((n) => n % 10 === 0);
@@ -5745,6 +6910,7 @@ b, strong { font-weight: 800; }
       if (n < cur || st) { stars = '<div class="node-stars">'; for (let i = 0; i < 3; i++) stars += '<span class="' + (i < st ? 'on' : '') + '">' + icon('star') + '</span>'; stars += '</div>'; }
       html += '<div class="node ' + state_ + (boss ? ' boss' : '') + '" style="left:' + x.toFixed(1) + 'px;top:' + y + 'px" data-n="' + n + '">' +
         (boss ? '<span class="crown">' + icon('scissors') + '</span>' : '') +
+        (introAt(n) ? '<span class="new-flag" title="Introduces a new mechanic">New</span>' : '') +
         '<button class="node-b" data-action="map-level" data-n="' + n + '" aria-label="Level ' + n + (state_ === 'locked' ? ' (locked)' : '') + '">' + n + (state_ === 'locked' ? icon('lock') : '') + '</button>' + stars + '</div>';
       y += boss ? 118 : 100;
     }
@@ -6089,6 +7255,7 @@ b, strong { font-weight: 800; }
     UI().closeOverlay(true);
     UI().show('game');
     const zen = level.kind === 'zen';
+    const unseen = mechanicsOf(level).filter((m) => !hasSeen(m));
     UI().hudSetup({
       title: titleFor(level),
       subPrefix: zen ? 'Board ' + level.num : '',
@@ -6096,7 +7263,8 @@ b, strong { font-weight: 800; }
       remaining: game.present.size, total: cur.total,
       timeLimit: level.timeLimit || null, timeLeft: level.timeLimit ? safe(() => game.timeLeft(), level.timeLimit) : null,
       needles: S().needles,
-      tutorial: level.tutorial || null,
+      tutorial: unseen.length ? null : level.tutorial || null, // coach waits until the explainer is dismissed
+      mechanics: mechanicsOf(level),
     });
     UI().setBarText('');
     R('setLevel', level, game, { intro: true });
@@ -6105,11 +7273,48 @@ b, strong { font-weight: 800; }
     UI().showFit(false);
     if (Number.isFinite(game.lives) && game.lives === 1) UI().vignette('warn');
     lastT = performance.now();
+    // first encounter with a v3 mechanic: explain it before play starts (board locked, timer paused)
+    if (unseen.length) explainMechanics(cur, unseen, true);
   }
   M.startLevel = startLevel;
 
+  /* ------------------------------------------------------------------ v3 mechanic explainers */
+  function mechanicsOf(level) {
+    const m = (level && Array.isArray(level.mechanics)) ? level.mechanics : [];
+    const known = (UI().MECH) || {};
+    return m.filter((x, i) => known[x] && m.indexOf(x) === i);
+  }
+  function hasSeen(m) {
+    return !!safe(() => (LE.Meta.hasSeen ? LE.Meta.hasSeen(m) : S().seen && S().seen[m]), false);
+  }
+  function markSeen(m) {
+    safe(() => {
+      if (LE.Meta.markSeen) LE.Meta.markSeen(m);
+      else { const s = S(); s.seen = s.seen || {}; if (!s.seen[m]) { s.seen[m] = Date.now(); LE.Meta.save(); } }
+    });
+  }
+  /* Show one popup per mechanic, one after another. While c.popup is set the board ignores taps and
+     the boss timer does not run (loop() also pauses for any open overlay). */
+  async function explainMechanics(c, mechs, isNew) {
+    if (!c || !mechs.length || c.popup) return;
+    c.popup = true;
+    R('setInteractive', false);
+    UI().zoomTip(false);
+    for (let i = 0; i < mechs.length; i++) {
+      if (cur !== c) return;
+      await UI().showMechanic(mechs[i], { isNew, step: i + 1, steps: mechs.length });
+      if (isNew) markSeen(mechs[i]);
+    }
+    if (cur !== c) return;
+    c.popup = false;
+    if (!c.over) R('setInteractive', true);
+    lastT = performance.now();
+    if (isNew && c.level.tutorial) UI().coach(c.level.tutorial);
+    if (isNew) UI().nudgeRules(); // show where the rules live now
+  }
+
   function onBoardTap(id, x, y) {
-    if (!cur || cur.over || UI().isOverlayOpen()) return;
+    if (!cur || cur.over || cur.popup || UI().isOverlayOpen()) return;
     const g = cur.game;
     if (g.status !== 'playing' || id == null) return;
     const res = safe(() => g.tap(id), null);
@@ -6130,8 +7335,9 @@ b, strong { font-weight: 800; }
       if (c.combo >= 2) UI().combo(c.combo, x, y);
       if (c.combo >= 5 && c.combo % 5 === 0) { sfx('combo', { combo: c.combo }); hap('medium'); }
     }
-    UI().hudProgress(res.remaining, c.total);
-    const p = R('exit', res.id, res);
+    // ribbons-left comes from game state (a knotted pair removes two ribbons in one tap)
+    UI().hudProgress(c.game.present ? c.game.present.size : res.remaining, c.total);
+    const p = R('exit', res.id, res); // full result: Render animates res.partner too
     if (res.won) onWin(p);
     else saveResume();
   }
@@ -6139,9 +7345,18 @@ b, strong { font-weight: 800; }
   function onSnag(res, x, y) {
     const c = cur;
     c.combo = 0;
-    R('snag', res.id, res);
+    R('snag', res.id, res); // res.id = the ribbon that is actually stuck (tapped one or its knot partner)
     sfx('snag'); hap('error');
-    UI().pop('Snag!', x, y, 'danger');
+    const partnerStuck = res.tappedId != null && res.tappedId !== res.id;
+    const longMsg = partnerStuck || res.reason === 'pinned';
+    // a pinned / knot snag happens at the crossing or partner, often away from the finger: float the toast just
+    // above the snag cell so it never covers what the player needs to see
+    let px = x, py = y;
+    if (longMsg && res.snagCell) {
+      const q = safe(() => LE.Render.cellToClient && LE.Render.cellToClient(res.snagCell[0], res.snagCell[1]), null);
+      if (q) { px = q.x; py = q.y - Math.max(22, q.size * 0.9); }
+    }
+    UI().pop(partnerStuck ? 'Knot is stuck!' : res.reason === 'pinned' ? 'Pinned underneath!' : 'Snag!', px, py, 'danger' + (longMsg ? ' long' : ''));
     const finite = Number.isFinite(res.lives);
     if (finite) {
       UI().hudLives(res.lives, c.game.maxLives || c.level.lives, { lost: true });
@@ -6270,7 +7485,7 @@ b, strong { font-weight: 800; }
     lastT = t;
     const c = cur;
     if (c) pollZoom(c);
-    if (!c || c.over || paused || doc.hidden || UI().isOverlayOpen()) return;
+    if (!c || c.over || c.popup || paused || doc.hidden || UI().isOverlayOpen()) return;
     const g = c.game;
     if (g.status !== 'playing') return;
     const r = safe(() => g.tick(dt), null);
@@ -6347,6 +7562,7 @@ b, strong { font-weight: 800; }
       case 'page-back': goHome(); break;
       case 'game-back': goHome(); break;
       case 'restart': if (cur) startLevel(cur.level, { fresh: true }); break;
+      case 'rules': if (cur && !cur.over && !cur.popup) explainMechanics(cur, mechanicsOf(cur.level), false); break;
       case 'fit': R('resetZoom'); UI().showFit(false); zoomUI.scaled = false; break;
       case 'hint': useHint(el); break;
       case 'win-next': {
